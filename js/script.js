@@ -879,7 +879,7 @@ if (botaoDeNovo) {
 
   // Endereço do mini servidor do EcoBot (veja servidor/LEIA-ME.md). Depois de publicar o Worker, cole aqui, ex.:
   // "https://ecobot.SEU-USUARIO.workers.dev". Com o endereço preenchido, a chave NÃO é usada no navegador.
-  const ECOBOT_URL = "";
+  const ECOBOT_URL = "https://ecobot.anaaforte1.workers.dev";
 
   const MODELO = "gemini-2.5-flash";
   const PERSONALIDADE =
