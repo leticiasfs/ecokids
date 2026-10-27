@@ -35,6 +35,10 @@ PRÓXIMOS PASSOS POSSÍVEIS
 
 - imagens/tito/ ......... uma imagem por expressão do Tito (feliz, triste, confiante...). Para trocar o rosto
   no HTML, mude a classe "rosto-feliz" para "rosto-<nome>"; no JavaScript use trocarRosto(elemento, "nome").
+                           Por enquanto TODAS as 15 expressões usam a mesma imagem (a nova tartaruga sorrindo).
+                           Quando tiver a nova tartaruga em outras expressões, é só salvar cada uma com o nome
+                           do arquivo correspondente (ex.: triste.png) para trocar, sem mexer em mais nada.
+                           A mesma imagem também é usada em imagens/mascote-hero-anexo.png (Início e Sobre).
 - Quiz: o banco de perguntas está no bloco "4) QUIZ" do js/script.js (cada partida sorteia 5).
 - Estrelas da tela final: calculadas em cada jogo (função estrelasPor) e levadas pelo endereço da conclusao.html.
 - Vídeos do Tito (página Aprenda): coloque o arquivo na pasta videos/ e escreva o caminho em "video" no TEMAS
