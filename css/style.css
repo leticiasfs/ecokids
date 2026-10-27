@@ -966,3 +966,8 @@ a.game-card, a.clay-button, a.logo-pill { text-decoration: none; }
 :root[data-tema="escuro"] .ecobot-msg.bot { color: var(--text); }
 :root[data-tema="escuro"] .ecobot-msg.user { background: var(--dark); }
 :root[data-tema="escuro"] .ecobot-form input::placeholder { color: #8fb3a8; }
+
+/* Quadradinhos das cores das lixeiras (Aprenda): símbolo de reciclagem branco */
+.bin-color.simbolo { display: grid; place-items: center; color: var(--white); }
+.bin-color.simbolo .icon { width: 40px; height: 40px; stroke-width: 2; filter: drop-shadow(0 2px 2px rgba(0,0,0,.25)); }
+.bin-color.simbolo.yellow { color: var(--white); }

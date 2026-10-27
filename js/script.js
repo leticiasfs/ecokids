@@ -76,11 +76,11 @@ const TEMAS = {
   lixeira: {
     titulo: "Lixeira",
     linhas: [
-      { cor: "blue", titulo: "Azul = <b>Papel</b>", texto: "jornal, caderno, caixa" },
-      { cor: "red", titulo: "Vermelha = <b>Plástico</b>", texto: "garrafa PET, pote, sacola" },
-      { cor: "green", titulo: "Verde = <b>Vidro</b>", texto: "garrafa, pote de conserva" },
-      { cor: "yellow", titulo: "Amarela = <b>Metal</b>", texto: "lata, tampinha, prego e parafuso" },
-      { cor: "brown", titulo: "Marrom = <b>Orgânico</b>", texto: "casca de fruta, casca de ovo, restos de comida" },
+      { simbolo: true, cor: "blue", titulo: "Azul = <b>Papel</b>", texto: "jornal, caderno, caixa" },
+      { simbolo: true, cor: "red", titulo: "Vermelha = <b>Plástico</b>", texto: "garrafa PET, pote, sacola" },
+      { simbolo: true, cor: "green", titulo: "Verde = <b>Vidro</b>", texto: "garrafa, pote de conserva" },
+      { simbolo: true, cor: "yellow", titulo: "Amarela = <b>Metal</b>", texto: "lata, tampinha, prego e parafuso" },
+      { simbolo: true, cor: "brown", titulo: "Marrom = <b>Orgânico</b>", texto: "casca de fruta, casca de ovo, restos de comida" },
       { cor: "green", icone: "reciclar", titulo: "<b>Reciclar</b>", texto: "é transformar o lixo em um produto novo e útil" },
       { cor: "brown", icone: "folha", titulo: "<b>Compostagem</b>", texto: "restos de comida viram adubo rico para as plantas (composto orgânico)" },
       { cor: "blue", icone: "agua", titulo: "Garrafa <b>reutilizável</b>", texto: "usar a mesma garrafa várias vezes evita muito lixo de plástico. A retornável volta para ser usada de novo" },
@@ -133,7 +133,9 @@ if (janela) {
     janela.querySelector(".learn-modal").setAttribute("aria-label", dados.titulo);
     // Monta uma linha para cada item do tema
     caixa.innerHTML = dados.linhas.map(function (linha) {
-      const quadrado = linha.icone
+      const quadrado = linha.simbolo
+        ? '<span class="bin-color simbolo clay ' + linha.cor + '">' + ICONES.reciclar + "</span>"
+        : linha.icone
         ? '<span class="bin-color icone clay ' + linha.cor + '">' + ARTE[linha.icone] + "</span>"
         : '<span class="bin-color clay ' + linha.cor + '"></span>';
       return '<div class="bin-row">' + quadrado + "<div><strong>" + linha.titulo +
