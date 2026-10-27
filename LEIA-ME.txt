@@ -51,3 +51,6 @@ PRÓXIMOS PASSOS POSSÍVEIS
   O código está no bloco 10 de js/script.js e o visual no fim de css/style.css.
   A chave do Google AI Studio fica em js/config.js (copie js/config.exemplo.js). Esse arquivo NÃO vai
   para o GitHub (.gitignore), então no site publicado o EcoBot responde que está "dormindo".
+
+- Servidor do EcoBot (Cloudflare Worker): pasta servidor/. Passo a passo e como "treinar" o bot em servidor/LEIA-ME.md.
+  Depois de publicar, cole o endereço em ECOBOT_URL (bloco 10 do js/script.js).

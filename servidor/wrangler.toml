@@ -1,0 +1,5 @@
+# Configuração do Cloudflare Worker do EcoBot (opcional: só se for publicar pelo terminal com "wrangler deploy")
+name = "ecobot"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+# A chave NÃO fica aqui. Cadastre com:  npx wrangler secret put GEMINI_API_KEY

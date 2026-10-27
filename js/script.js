@@ -877,12 +877,16 @@ if (botaoDeNovo) {
 (function () {
   if (!document.querySelector("[data-ecobot]")) return;
 
+  // Endereço do mini servidor do EcoBot (veja servidor/LEIA-ME.md). Depois de publicar o Worker, cole aqui, ex.:
+  // "https://ecobot.SEU-USUARIO.workers.dev". Com o endereço preenchido, a chave NÃO é usada no navegador.
+  const ECOBOT_URL = "";
+
   const MODELO = "gemini-2.5-flash";
   const PERSONALIDADE =
     "Você é o EcoBot, o amigo da natureza do site EcoKids, ao lado do Tito, a tartaruga. " +
     "Ajude crianças de 6 a 11 anos a aprender sobre reciclagem, água, energia, animais, plantas e cuidados com o planeta. " +
     "Fale em português do Brasil, com frases curtas, linguagem simples, alegre e encorajadora, e alguns emojis (🌿🐢♻️). " +
-    "Responda em no máximo 4 frases. Se a pergunta fugir do tema da natureza, escola ou meio ambiente, " +
+    "Responda em no máximo 4 frases. Se a pergunta fugir de natureza, meio ambiente ou amizade, " +
     "diga gentilmente que você só conversa sobre a natureza e sugira um assunto legal. " +
     "NUNCA peça nem aceite dados pessoais (nome completo, endereço, telefone, escola, fotos). " +
     "Se a criança parecer triste, em perigo ou com algum problema sério, incentive-a a conversar com um adulto de confiança.";
@@ -936,6 +940,21 @@ if (botaoDeNovo) {
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !painel.hidden) abrir(false); });
 
   async function perguntar(texto) {
+    // Modo servidor (o certo para o site publicado): a chave fica guardada no Worker
+    if (ECOBOT_URL) {
+      const r = await fetch(ECOBOT_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          conversa: historico.map(function (m) { return { papel: m.role, texto: m.parts[0].text }; }).concat([{ papel: "user", texto: texto }])
+        })
+      });
+      const d = await r.json().catch(function () { return {}; });
+      if (r.status === 429 || d.erro === "muitos-pedidos") return "Estou com muitas perguntas agora! Espere um minutinho e tente de novo. ⏳";
+      if (!r.ok || !d.texto) return "Ops! Minha floresta mágica da IA não respondeu. Tente de novo mais tarde! 🌳";
+      return d.texto;
+    }
+    // Modo local (só para testes no seu computador): usa a chave de js/config.js direto
     const chave = window.ECOKIDS_CONFIG && window.ECOKIDS_CONFIG.GEMINI_API_KEY;
     if (!chave || chave.indexOf("COLE_") === 0) return "O EcoBot ainda está dormindo (falta a chave da IA). Peça ajuda a um adulto! 😴";
     const resposta = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + MODELO + ":generateContent", {
@@ -956,7 +975,7 @@ if (botaoDeNovo) {
     }
     const parte = dados.candidates && dados.candidates[0] && dados.candidates[0].content &&
       dados.candidates[0].content.parts && dados.candidates[0].content.parts[0];
-    if (!parte || !parte.text) return "Hmm, essa eu prefiro não responder. Que tal perguntar sobre animais, plantas ou reciclagem? 🌿";
+    if (!parte || !parte.text) return "Hmm, essa eu prefiro não responder. Que tal perguntar sobre animais, plantas, reciclagem ou amizade? 🌿";
     return parte.text.replace(/\*+/g, "").trim();
   }
 
@@ -985,8 +1004,8 @@ if (botaoDeNovo) {
     campo.focus();
   });
 
-  // Carrega a chave (js/config.js) se o arquivo existir; no GitHub Pages ele não existe de propósito
-  if (!window.ECOKIDS_CONFIG) {
+  // Carrega a chave local (js/config.js) só no modo local; com o servidor (ECOBOT_URL) ela nem é necessária
+  if (!ECOBOT_URL && !window.ECOKIDS_CONFIG) {
     const s = document.createElement("script");
     s.src = "js/config.js";
     s.onerror = function () {};
