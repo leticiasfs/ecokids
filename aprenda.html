@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EcoKids - Aprenda</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page learn-page">
+    <!-- Cabeçalho: logo e menu (igual em todas as páginas) -->
+    <header class="site-header">
+      <a class="logo-pill" href="index.html"><svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M51 11C31 12 15 21 13 42c11 3 23 0 31-8 8-8 8-17 7-23Z"/><path d="M14 47c8-12 17-20 30-27"/></svg><span>EcoKids</span></a>
+      <nav class="nav-links" aria-label="Navegação principal">
+        <a href="index.html">Início</a>
+        <a href="aprenda.html" class="active">Aprenda</a>
+        <a href="jogos.html">Jogos</a>
+        <a href="sobre.html">Sobre</a>
+        <a class="clay-button yellow" href="jogos.html">Jogar</a>
+      </nav>
+    </header>
+    <div class="content-shell">
+        <div class="section-intro">
+          <div class="mascot mascot-happy rosto-feliz" role="img" aria-label="Tito, a tartaruga do EcoKids"></div>
+          <div>
+            <h1>Aprenda</h1>
+            <p>Escolha um tema e descubra em segundos.</p>
+          </div>
+        </div>
+        <!-- Clique num cartão: o JavaScript abre a janela com o conteúdo (veja js/script.js, bloco 2) -->
+        <div class="learn-grid">
+          <button class="learn-card clay red" data-tema="lixeira">
+            <span class="large-icon"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.293 13.596 7.196 9.5 3.1 10.598"/><path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633 4.096 1.098 1.097-4.096"/></svg></span>
+            <strong>Lixeira</strong>
+            <span>Cada cor guarda um material</span>
+            <small>Toque para abrir</small>
+          </button>
+          <button class="learn-card clay blue" data-tema="agua">
+            <span class="large-icon"><svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 7S17 25 17 38a15 15 0 0 0 30 0C47 25 32 7 32 7Z"/></svg></span>
+            <strong>Água</strong>
+            <span>Pequenos hábitos economizam</span>
+            <small>Toque para abrir</small>
+          </button>
+          <button class="learn-card clay yellow" data-tema="energia">
+            <span class="large-icon"><svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 29a12 12 0 1 1 24 0c0 7-6 9-7 16H27c-1-7-7-9-7-16Z"/><path d="M27 51h10M29 57h6"/></svg></span>
+            <strong>Energia</strong>
+            <span>Use só o necessário</span>
+            <small>Toque para abrir</small>
+          </button>
+          <button class="learn-card clay green" data-tema="natureza">
+            <span class="large-icon"><svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M51 11C31 12 15 21 13 42c11 3 23 0 31-8 8-8 8-17 7-23Z"/><path d="M14 47c8-12 17-20 30-27"/></svg></span>
+            <strong>Natureza</strong>
+            <span>Cuide de plantas e bichos</span>
+            <small>Toque para abrir</small>
+          </button>
+        </div>
+    </div>
+    <!-- Colinas verdes decorativas do rodapé -->
+    <div class="hills" aria-hidden="true">
+      <svg viewBox="0 0 1440 116" preserveAspectRatio="none">
+        <path class="hill-back" d="M0 64C218 16 394 38 566 70c192 36 363 32 565-2 153-26 215-51 309 0v48H0Z"/>
+        <path class="hill-front" d="M0 86c208-25 375-27 572 0 263 36 461 20 868-7v37H0Z"/>
+      </svg>
+      <div></div>
+    </div>
+  </main>
+  <!-- Janela que abre ao clicar num cartão (começa escondida) -->
+  <div class="modal-backdrop" id="modal" hidden>
+    <section class="learn-modal clay" role="dialog" aria-modal="true" aria-label="Tema">
+      <div class="modal-title">
+        <div class="mascot mascot-happy rosto-feliz" role="img" aria-label="Tito, a tartaruga do EcoKids"></div>
+        <h2></h2>
+        <button class="modal-close" aria-label="Fechar">&times;</button>
+      </div>
+      <!-- Área que rola quando o conteúdo é maior que a janela -->
+      <div class="modal-scroll">
+        <div class="modal-body" tabindex="0">
+          <!-- Espaço do vídeo do Tito. Enquanto não houver vídeo, mostra o aviso "em breve" (veja "video" em TEMAS no script) -->
+          <div class="video-slot"></div>
+          <div class="bin-list"></div>
+        </div>
+        <div class="scroll-hint" hidden aria-hidden="true">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          <span>Role para ver mais</span>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script src="js/script.js"></script>
+</body>
+</html>

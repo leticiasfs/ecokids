@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>EcoKids - Quiz</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page quiz-page">
+    <div class="quiz-shell">
+      <div class="quiz-topbar">
+        <a class="clay-button light" href="jogos.html">Voltar</a>
+        <div class="quiz-progress">
+          <strong id="quiz-numero">Pergunta 1 de 5</strong>
+          <div class="progress-track clay"><span id="quiz-barra"></span></div>
+        </div>
+        <span class="score-pill clay" id="placar">Acertos: 0</span>
+      </div>
+      <div class="quiz-question-row">
+        <div class="mascot mascot-thinking rosto-pensativo" role="img" aria-label="Tito, a tartaruga do EcoKids"></div>
+        <section class="quiz-question clay">
+          <h1 id="quiz-pergunta">Pergunta</h1>
+        </section>
+      </div>
+      <!-- Os 4 botões de resposta são criados pelo JavaScript (bloco 4) -->
+      <div class="quiz-answers" id="quiz-respostas"></div>
+      <!-- A dica só aparece quando a criança clica no botão (o texto vem do JavaScript) -->
+      <div class="quiz-hint-area">
+        <button class="clay-button light quiz-hint-button" id="quiz-dica-botao" type="button" aria-expanded="false" aria-controls="quiz-dica">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
+          <span>Ver dica</span>
+        </button>
+        <p class="quiz-hint clay" id="quiz-dica" hidden></p>
+      </div>
+      <p class="quiz-feedback" id="quiz-feedback"></p>
+      <button class="clay-button dark quiz-next" id="quiz-proxima" hidden>Próxima</button>
+    </div>
+  </main>
+  <script src="js/script.js"></script>
+</body>
+</html>

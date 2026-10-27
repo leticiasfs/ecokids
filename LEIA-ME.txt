@@ -1,0 +1,46 @@
+ECOKIDS - SITE EM HTML, CSS E JAVASCRIPT PUROS
+================================================
+
+COMO ABRIR
+- Descompacte a pasta e dê dois cliques em index.html (abre no navegador).
+- Para editar, abra a pasta no VS Code.
+
+O QUE TEM EM CADA PASTA
+- index.html .......... página inicial
+- aprenda.html ........ cartões que abrem a janela com o conteúdo
+- jogos.html .......... escolha do jogo
+- memoria.html, quiz.html, lixeira.html, quebra-cabeca.html
+                         jogos que FUNCIONAM (usam js/script.js)
+- caca-palavras.html, palavras-cruzadas.html
+                         telas de jogo ainda SEM lógica (só o visual)
+- conclusao.html ...... tela "Muito bem!" (aparece ao terminar um jogo)
+- sobre.html .......... página Sobre (trocar os textos entre [colchetes])
+- css/style.css ....... todo o visual. As CORES ficam no topo (:root).
+- js/script.js ........ a lógica dos jogos e da janela do Aprenda (comentado)
+- imagens/ ............ mascote e figuras do quebra-cabeça
+
+COMO MUDAR AS COISAS
+- Cor: em css/style.css, procure ":root" e troque o valor (ex.: --leaf: #5e9e34).
+- Texto: abra a página .html e troque o que está entre as tags (<h1>, <p>...).
+- Imagem do quebra-cabeça: troque o arquivo em imagens/ (mantenha o nome) ou o
+  lista "figuras" no bloco "6) QUEBRA-CABEÇA" do js/script.js (as 2 primeiras alternam; a 3a, maior, vem depois).
+- Perguntas do quiz: em js/script.js, bloco "4) QUIZ", lista "perguntas".
+- Itens da lixeira certa: em js/script.js, bloco "5) LIXEIRA CERTA", lista "itens".
+- Conteúdo dos cartões do Aprenda: em js/script.js, bloco "2) JANELA", objeto TEMAS.
+
+PRÓXIMOS PASSOS POSSÍVEIS
+- Lógica do caça-palavras e das palavras cruzadas.
+- Imagens dos itens no jogo da lixeira (para crianças que ainda não leem).
+- Texto da página Sobre e nomes da dupla.
+
+- imagens/tito/ ......... uma imagem por expressão do Tito (feliz, triste, confiante...). Para trocar o rosto
+  no HTML, mude a classe "rosto-feliz" para "rosto-<nome>"; no JavaScript use trocarRosto(elemento, "nome").
+- Quiz: o banco de perguntas está no bloco "4) QUIZ" do js/script.js (cada partida sorteia 5).
+- Estrelas da tela final: calculadas em cada jogo (função estrelasPor) e levadas pelo endereço da conclusao.html.
+- Vídeos do Tito (página Aprenda): coloque o arquivo na pasta videos/ e escreva o caminho em "video" no TEMAS
+  do js/script.js, por exemplo:  video: "videos/agua.mp4"   (opcional: capa: "videos/agua.jpg").
+  Enquanto "video" estiver vazio, a janela mostra "Vídeo do Tito - em breve".
+- Caça-palavras (bloco 8 do js/script.js): lista "BANCO" com as palavras possíveis; cada partida sorteia 6 e monta a grade.
+- Palavras cruzadas (bloco 9): lista "palavras" com resposta, dica, linha e coluna de cada palavra.
+- Palavras cruzadas: 3 cruzadinhas (lista CRUZADINHAS no bloco 9), uma por vez, sem repetir até passar pelas 3.
+- Caça-palavras: 32 palavras no BANCO (bloco 8); cada partida sorteia 6. Todas as palavras aparecem na página Aprenda.
