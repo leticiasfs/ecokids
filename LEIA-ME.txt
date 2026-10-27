@@ -46,3 +46,8 @@ PRÓXIMOS PASSOS POSSÍVEIS
 - Palavras cruzadas (bloco 9): lista "palavras" com resposta, dica, linha e coluna de cada palavra.
 - Palavras cruzadas: 3 cruzadinhas (lista CRUZADINHAS no bloco 9), uma por vez, sem repetir até passar pelas 3.
 - Caça-palavras: 32 palavras no BANCO (bloco 8); cada partida sorteia 6. Todas as palavras aparecem na página Aprenda.
+
+- EcoBot (chat com IA): aparece nas páginas Início, Aprenda, Jogos e Sobre (a <main> com data-ecobot).
+  O código está no bloco 10 de js/script.js e o visual no fim de css/style.css.
+  A chave do Google AI Studio fica em js/config.js (copie js/config.exemplo.js). Esse arquivo NÃO vai
+  para o GitHub (.gitignore), então no site publicado o EcoBot responde que está "dormindo".

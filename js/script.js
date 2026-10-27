@@ -866,3 +866,128 @@ if (botaoDeNovo) {
   caixaEstrelas.setAttribute("role", "img");
   caixaEstrelas.setAttribute("aria-label", estrelas + " de 5 estrelas");
 }
+
+// ============================================================
+// 10) ECOBOT - assistente de IA (Gemini) para as crianças
+//    Aparece nas páginas cuja <main> tem o atributo data-ecobot.
+//    A chave fica em js/config.js (fora do GitHub). Sem a chave, o EcoBot avisa com carinho.
+// ============================================================
+(function () {
+  if (!document.querySelector("[data-ecobot]")) return;
+
+  const MODELO = "gemini-2.5-flash";
+  const PERSONALIDADE =
+    "Você é o EcoBot, o amigo da natureza do site EcoKids, ao lado do Tito, a tartaruga. " +
+    "Ajude crianças de 6 a 11 anos a aprender sobre reciclagem, água, energia, animais, plantas e cuidados com o planeta. " +
+    "Fale em português do Brasil, com frases curtas, linguagem simples, alegre e encorajadora, e alguns emojis (🌿🐢♻️). " +
+    "Responda em no máximo 4 frases. Se a pergunta fugir do tema da natureza, escola ou meio ambiente, " +
+    "diga gentilmente que você só conversa sobre a natureza e sugira um assunto legal. " +
+    "NUNCA peça nem aceite dados pessoais (nome completo, endereço, telefone, escola, fotos). " +
+    "Se a criança parecer triste, em perigo ou com algum problema sério, incentive-a a conversar com um adulto de confiança.";
+  const CATEGORIAS = ["HARM_CATEGORY_HARASSMENT", "HARM_CATEGORY_HATE_SPEECH", "HARM_CATEGORY_SEXUALLY_EXPLICIT", "HARM_CATEGORY_DANGEROUS_CONTENT"];
+  const MAX_HISTORICO = 8; // quantas mensagens anteriores o EcoBot lembra
+  const historico = [];
+  let ocupado = false;
+
+  // Monta o botão flutuante e a janela do chat
+  const raiz = document.createElement("div");
+  raiz.className = "ecobot";
+  raiz.innerHTML =
+    '<section class="ecobot-panel clay" id="ecobot-panel" role="dialog" aria-label="Conversa com o EcoBot" hidden>' +
+      '<header class="ecobot-header"><span class="ecobot-avatar mascot rosto-feliz" aria-hidden="true"></span>' +
+        '<div><strong>EcoBot</strong><small>Seu amigo da natureza</small></div>' +
+        '<button class="ecobot-close" type="button" aria-label="Fechar o chat">×</button></header>' +
+      '<div class="ecobot-messages" id="ecobot-msgs" aria-live="polite"></div>' +
+      '<form class="ecobot-form" id="ecobot-form" autocomplete="off">' +
+        '<input id="ecobot-input" type="text" maxlength="300" placeholder="Pergunte algo sobre a natureza..." aria-label="Sua pergunta">' +
+        '<button class="clay-button yellow" type="submit">Enviar</button></form>' +
+    '</section>' +
+    '<button class="ecobot-fab clay-button" id="ecobot-fab" type="button" aria-expanded="false" aria-controls="ecobot-panel">' +
+      '<span class="ecobot-avatar mascot rosto-feliz" aria-hidden="true"></span><span>EcoBot</span></button>';
+  document.body.appendChild(raiz);
+
+  const painel = raiz.querySelector(".ecobot-panel");
+  const botao = raiz.querySelector(".ecobot-fab");
+  const caixa = raiz.querySelector(".ecobot-messages");
+  const form = raiz.querySelector(".ecobot-form");
+  const campo = raiz.querySelector("#ecobot-input");
+
+  function mensagem(texto, quem) {
+    const div = document.createElement("div");
+    div.className = "ecobot-msg " + quem;
+    div.textContent = texto; // textContent: nunca interpreta HTML
+    caixa.appendChild(div);
+    caixa.scrollTop = caixa.scrollHeight;
+    return div;
+  }
+
+  function abrir(abrirAgora) {
+    painel.hidden = !abrirAgora;
+    botao.setAttribute("aria-expanded", abrirAgora ? "true" : "false");
+    if (abrirAgora) {
+      if (!caixa.children.length) mensagem("Olá! Eu sou o EcoBot. Quer aprender algo legal sobre a natureza ou os animais hoje? 🌿🐾", "bot");
+      campo.focus();
+    }
+  }
+  botao.addEventListener("click", function () { abrir(painel.hidden); });
+  raiz.querySelector(".ecobot-close").addEventListener("click", function () { abrir(false); botao.focus(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !painel.hidden) abrir(false); });
+
+  async function perguntar(texto) {
+    const chave = window.ECOKIDS_CONFIG && window.ECOKIDS_CONFIG.GEMINI_API_KEY;
+    if (!chave || chave.indexOf("COLE_") === 0) return "O EcoBot ainda está dormindo (falta a chave da IA). Peça ajuda a um adulto! 😴";
+    const resposta = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + MODELO + ":generateContent", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "x-goog-api-key": chave },
+      body: JSON.stringify({
+        systemInstruction: { parts: [{ text: PERSONALIDADE }] },
+        contents: historico.concat([{ role: "user", parts: [{ text: texto }] }]),
+        generationConfig: { maxOutputTokens: 400, temperature: 0.7 },
+        safetySettings: CATEGORIAS.map(function (c) { return { category: c, threshold: "BLOCK_LOW_AND_ABOVE" }; })
+      })
+    });
+    const dados = await resposta.json();
+    if (!resposta.ok) {
+      console.error("EcoBot:", dados);
+      if (resposta.status === 429) return "Estou com muitas perguntas agora! Espere um minutinho e tente de novo. ⏳";
+      return "Ops! Minha floresta mágica da IA não respondeu. Tente de novo mais tarde! 🌳";
+    }
+    const parte = dados.candidates && dados.candidates[0] && dados.candidates[0].content &&
+      dados.candidates[0].content.parts && dados.candidates[0].content.parts[0];
+    if (!parte || !parte.text) return "Hmm, essa eu prefiro não responder. Que tal perguntar sobre animais, plantas ou reciclagem? 🌿";
+    return parte.text.replace(/\*+/g, "").trim();
+  }
+
+  form.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const texto = campo.value.trim();
+    if (!texto || ocupado) return;
+    ocupado = true;
+    campo.value = "";
+    mensagem(texto, "user");
+    const pensando = mensagem("EcoBot está pensando...", "bot pensando");
+    let resposta;
+    try {
+      resposta = await perguntar(texto);
+      if (resposta.indexOf("😴") === -1 && resposta.indexOf("🌳") === -1 && resposta.indexOf("⏳") === -1) {
+        historico.push({ role: "user", parts: [{ text: texto }] }, { role: "model", parts: [{ text: resposta }] });
+        while (historico.length > MAX_HISTORICO) historico.shift();
+      }
+    } catch (erro) {
+      console.error("EcoBot:", erro);
+      resposta = "Erro de conexão com a floresta mágica da IA. Tente de novo mais tarde! 🌳";
+    }
+    pensando.remove();
+    mensagem(resposta, "bot");
+    ocupado = false;
+    campo.focus();
+  });
+
+  // Carrega a chave (js/config.js) se o arquivo existir; no GitHub Pages ele não existe de propósito
+  if (!window.ECOKIDS_CONFIG) {
+    const s = document.createElement("script");
+    s.src = "js/config.js";
+    s.onerror = function () {};
+    document.head.appendChild(s);
+  }
+})();
