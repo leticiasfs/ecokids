@@ -937,3 +937,6 @@ a.game-card, a.clay-button, a.logo-pill { text-decoration: none; }
 .clues-card .cross-feedback { min-height: 20px; font-size: 16px; }
 @media (max-width: 1100px) { .crossword-layout { grid-template-columns: 1fr; } .clues-card .mascot { display: block; } }
 @media (max-width: 640px) { .clues-card .clue-list { columns: 1; } .clues-card .mascot { display: none; } }
+
+/* Faixa "Hora de jogar" do rodapé: usa a nova tartaruga */
+.game-cta .mascot { background-image: url("../imagens/tito-rodape.png"); }
