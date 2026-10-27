@@ -40,11 +40,11 @@ img, svg { display: block; max-width: 100%; }
   --white: #ffffff;
   --ink-fixed: #17402d;           /* texto escuro que fica sempre escuro (em cima de amarelo e lima) */
   --icon-bg: #f3f8e8;             /* fundo claro das bolinhas de ícone */
-  --pale: var(--pale);                /* amarelo bem clarinho (destaques) */
-  --soft: var(--soft);                /* verde bem clarinho (trilhas, estrelas vazias) */
-  --ok-bg: var(--ok-bg);
-  --bad-bg: var(--bad-bg);
-  --bad-ink: var(--bad-ink);
+  --pale: #fff3b8;                /* amarelo bem clarinho (destaques) */
+  --soft: #e3edd2;                /* verde bem clarinho (trilhas, estrelas vazias) */
+  --ok-bg: #dff3c8;
+  --bad-bg: #f6b3a8;
+  --bad-ink: #a1271b;
 
   /* ===== TEMA CLARO (padrão): dia ===== */
   --cream: #f3f8e8;
@@ -927,3 +927,13 @@ a.game-card, a.clay-button, a.logo-pill { text-decoration: none; }
 }
 
 .quiz-topbar .theme-toggle { margin-left: 8px; }
+
+/* Palavras cruzadas: card de dicas mais largo (mesma largura total do caça-palavras) e mais baixo */
+.crossword-layout { grid-template-columns: 564px 424px; gap: 40px; }
+.clues-card { position: relative; min-height: 0; padding: 24px 28px 20px; }
+.clues-card .clue-list { columns: 2; column-gap: 16px; margin-top: 8px; }
+.clues-card .clue-list p { break-inside: avoid; font-size: 16px; padding: 4px 6px; }
+.clues-card .mascot { position: absolute; top: 14px; right: 18px; width: 78px; height: 100px; margin: 0; }
+.clues-card .cross-feedback { min-height: 20px; font-size: 16px; }
+@media (max-width: 1100px) { .crossword-layout { grid-template-columns: 1fr; } .clues-card .mascot { display: block; } }
+@media (max-width: 640px) { .clues-card .clue-list { columns: 1; } .clues-card .mascot { display: none; } }
