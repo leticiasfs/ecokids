@@ -15,12 +15,17 @@ O QUE TEM EM CADA PASTA
                          telas de jogo ainda SEM lógica (só o visual)
 - conclusao.html ...... tela "Muito bem!" (aparece ao terminar um jogo)
 - sobre.html .......... página Sobre (trocar os textos entre [colchetes])
-- css/style.css ....... todo o visual. As CORES ficam no topo (:root).
-- js/script.js ........ a lógica dos jogos e da janela do Aprenda (comentado)
+- css/style.css ....... todo o visual, organizado em 23 partes numeradas (veja o índice no topo).
+                         As CORES ficam na parte 2 (:root).
+- js/script.js ........ a lógica dos jogos, da janela do Aprenda, do menu e do EcoBot (comentado)
+- js/tito.js .......... o "jeito vivo" do Tito (respirar, olhar o mouse) e o Tito 3D (preparado)
+- docs/tito-guia-visual.md  identidade visual do Tito e o que os arquivos novos precisam ter
 - imagens/ ............ mascote e figuras do quebra-cabeça
 
 COMO MUDAR AS COISAS
 - Cor: em css/style.css, procure ":root" e troque o valor (ex.: --leaf: #5e9e34).
+  As cores dos cartões dos jogos são --card-green, --card-coral, --card-brown, --card-blue,
+  --card-yellow e --card-purple. Para trocar a cor de um cartão, troque a classe dele no HTML.
 - Texto: abra a página .html e troque o que está entre as tags (<h1>, <p>...).
 - Imagem do quebra-cabeça: troque o arquivo em imagens/ (mantenha o nome) ou o
   lista "figuras" no bloco "6) QUEBRA-CABEÇA" do js/script.js (as 2 primeiras alternam; a 3a, maior, vem depois).
@@ -37,7 +42,8 @@ PRÓXIMOS PASSOS POSSÍVEIS
   no HTML, mude a classe "rosto-feliz" para "rosto-<nome>"; no JavaScript use trocarRosto(elemento, "nome").
 - Quiz: o banco de perguntas está no bloco "4) QUIZ" do js/script.js (cada partida sorteia 5).
 - Estrelas da tela final: calculadas em cada jogo (função estrelasPor) e levadas pelo endereço da conclusao.html.
-- imagens/tito-rodape.png .. nova tartaruga, usada só na faixa "Hora de jogar!" do rodapé da página inicial.
+- imagens/tito-rodape.png .. NÃO é mais usada (tinha bordas serrilhadas). A faixa "Hora de jogar!" usa
+  a expressão "empolgado". O arquivo foi mantido até a nova arte do Tito ser aprovada.
 
 - Vídeos do Tito (página Aprenda): coloque o arquivo na pasta videos/ e escreva o caminho em "video" no TEMAS
   do js/script.js, por exemplo:  video: "videos/agua.mp4"   (opcional: capa: "videos/agua.jpg").
@@ -48,9 +54,49 @@ PRÓXIMOS PASSOS POSSÍVEIS
 - Caça-palavras: 32 palavras no BANCO (bloco 8); cada partida sorteia 6. Todas as palavras aparecem na página Aprenda.
 
 - EcoBot (chat com IA): aparece nas páginas Início, Aprenda, Jogos e Sobre (a <main> com data-ecobot).
-  O código está no bloco 10 de js/script.js e o visual no fim de css/style.css.
+  O código está no bloco 10 de js/script.js e o visual na parte 21 do css/style.css.
   A chave do Google AI Studio fica em js/config.js (copie js/config.exemplo.js). Esse arquivo NÃO vai
   para o GitHub (.gitignore), então no site publicado o EcoBot responde que está "dormindo".
 
 - Servidor do EcoBot (Cloudflare Worker): pasta servidor/. Passo a passo e como "treinar" o bot em servidor/LEIA-ME.md.
   Depois de publicar, cole o endereço em ECOBOT_URL (bloco 10 do js/script.js).
+
+ATUALIZAÇÃO VISUAL (branch melhorias-ecokids)
+- O site funciona com zoom de 100%: os tamanhos usam clamp/rem e se adaptam à largura e à ALTURA da tela
+  (há ajustes para notebooks baixos no item 23 do CSS).
+- Menu hambúrguer no celular e tablet (bloco 11 do js/script.js). O <html> ganha a classe "js" pelo
+  script do <head>; sem JavaScript, os links continuam aparecendo.
+- Tema: se a pessoa nunca escolheu, o site segue o tema do sistema (claro/escuro). A escolha continua
+  salva em localStorage ("ecokids-tema").
+- Folhinhas voando e confete na tela final: bloco 12 do js/script.js (desligados para quem pede
+  "reduzir movimento" no sistema).
+- Imagens do Tito em WebP (bem mais leves) com o PNG de reserva: imagens/tito/*.webp e
+  imagens/mascote-hero-anexo.webp. Se trocar um PNG, gere o .webp com o mesmo nome (ex.: squoosh.app)
+  ou apague o .webp antigo.
+- Tito 3D: veja docs/tito-guia-visual.md e o topo do js/tito.js. Para testar um modelo .glb antes de
+  colocar no site, abra ferramentas/tito-3d.html (não aparece no menu).
+- EcoBot sem responder: veja "Se o EcoBot parar de responder" em servidor/LEIA-ME.md.
+- Depois de mudar o CSS ou o JS, aumente o número em "style.css?v=23" e "script.js?v=21" / "tito.js?v=21"
+  em todas as páginas, para o navegador não usar a versão antiga guardada.
+
+PÁGINA INICIAL (novo visual)
+- O cenário do topo (sol, nuvens, colinas, arbustos, flores e grama) é feito com desenhos SVG no próprio
+  index.html (bloco "Desenhos do cenário") e posicionado pela parte 8 do css/style.css. As cores do dia e da
+  noite ficam nas variáveis do começo da parte 8 (ex.: --colina1-topo, --madeira).
+- O título fica na "placa de madeira" (classe .placa).
+- Cartões "Como cuidar do planeta": ilustrações 3D com fundo transparente em imagens/cuidar/
+  (lixeira, agua, energia, planta; .png e .webp). Para trocar uma, mantenha o nome e o fundo transparente.
+
+APRENDA, JOGOS E SOBRE (identidade de massinha 3D)
+- As três páginas usam o mesmo cenário da página inicial (nuvens, colinas, arbustos e flores): cada uma tem
+  uma cópia do bloco "Desenhos do cenário" e o bloco "cena cena-pagina". O <main> delas tem a classe
+  "com-cenario" (parte 9 do CSS).
+- Cartões coloridos de massinha (Aprenda, Jogos e ODS): parte 10 do CSS. A cor de cada cartão vem de --cor;
+  as cores ficam no item 2 (--learn-... para o Aprenda, --game-... para os Jogos). À noite as cores ficam um
+  pouco mais fundas (--escurece); as cores oficiais dos ODS não mudam.
+- Aprenda: os cartões usam as mesmas ilustrações de imagens/cuidar/ da página inicial.
+- Jogos: um desenho para cada jogo em imagens/jogos/ (arquivos .svg feitos para o projeto). Para mudar um
+  desenho, abra o .svg num editor de texto ou no Inkscape (gratuito).
+- Sobre: desenhos dos ODS em imagens/sobre/ (ods-4, ods-13, ods-15; desenhos próprios, não são os ícones
+  oficiais da ONU). A placa "Sobre o EcoKids" é a mesma placa de madeira da página inicial.
+- Cabeçalho: a "barra de massinha" com os links e o botão verde da página atual valem para todas as páginas.

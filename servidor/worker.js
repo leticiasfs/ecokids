@@ -12,7 +12,10 @@
  */
 
 // ---------------------------------------------------------------- CONFIGURAÇÃO
-const MODELO = "gemini-2.5-flash";
+// Modelo do Gemini. Quando o Google aposentar um modelo, dá para trocar SEM mexer no código:
+// na Cloudflare, crie a variável (texto comum, não secreta) GEMINI_MODELO com o nome novo.
+// Foi exatamente isso que quebrou o EcoBot: a versão publicada ainda usava "gemini-1.5-flash", que foi desligado.
+const MODELO_PADRAO = "gemini-2.5-flash";
 const ORIGENS_PERMITIDAS = [
   "https://leticiasfs.github.io",   // site publicado no GitHub Pages
   "http://127.0.0.1:5500", "http://localhost:5500",   // Live Server (VS Code)
@@ -156,7 +159,8 @@ export default {
       return resposta({ texto: "Opa! Por segurança, nunca conte telefone, e-mail ou documentos na internet, nem para mim. 🔒 Vamos conversar sobre a natureza? Qual é o seu bicho preferido? 🐢" }, 200, origem);
     }
 
-    const api = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODELO}:generateContent`, {
+    const modelo = env.GEMINI_MODELO || MODELO_PADRAO;
+    const api = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent`, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY },
       body: JSON.stringify({

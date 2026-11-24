@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200">
+  <!-- EcoKids: ilustração do Quebra-cabeça (desenho próprio do projeto, estilo massinha) -->
+  <defs>
+    <filter id="massa" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/>
+      <feSpecularLighting in="b" surfaceScale="5" specularConstant=".75" specularExponent="30" lighting-color="#fff" result="s"><feDistantLight azimuth="225" elevation="48"/></feSpecularLighting>
+      <feComposite in="s" in2="SourceAlpha" operator="in" result="brilho"/>
+      <feOffset in="SourceAlpha" dx="-5" dy="-7"/><feGaussianBlur stdDeviation="5" result="o"/>
+      <feComposite in="SourceAlpha" in2="o" operator="arithmetic" k2="1" k3="-1" result="borda"/>
+      <feFlood flood-color="#1a1000" flood-opacity=".32"/><feComposite in2="borda" operator="in" result="sombra"/>
+      <feMerge result="m"><feMergeNode in="SourceGraphic"/><feMergeNode in="sombra"/></feMerge>
+      <feComposite in="m" in2="brilho" operator="arithmetic" k2="1" k3="1"/>
+    </filter>
+    <filter id="chao" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+    <!-- encaixes (buracos) das peças -->
+    <mask id="buraco-b" maskUnits="userSpaceOnUse" x="0" y="0" width="240" height="200"><rect width="240" height="200" fill="#fff"/><circle cx="122" cy="70" r="13"/></mask>
+    <mask id="buraco-c" maskUnits="userSpaceOnUse" x="0" y="0" width="240" height="200"><rect width="240" height="200" fill="#fff"/><circle cx="88" cy="104" r="13"/></mask>
+    <mask id="buraco-d" maskUnits="userSpaceOnUse" x="0" y="0" width="240" height="200"><rect width="240" height="200" fill="#fff"/><circle cx="122" cy="138" r="13"/><circle cx="156" cy="104" r="13"/></mask>
+  </defs>
+  <ellipse cx="120" cy="184" rx="86" ry="9" fill="#5a3a00" opacity=".25" filter="url(#chao)"/>
+  <!-- peça A (verde): encaixe para a direita e para baixo -->
+  <g filter="url(#massa)" fill="#5cb85c"><rect x="52" y="34" width="66" height="66" rx="10"/><circle cx="124" cy="70" r="11"/><circle cx="88" cy="106" r="11"/></g>
+  <!-- peça B (azul) -->
+  <g filter="url(#massa)"><g mask="url(#buraco-b)" fill="#3b9de3"><rect x="122" y="34" width="66" height="66" rx="10"/><circle cx="156" cy="106" r="11"/></g></g>
+  <!-- peça C (roxa) -->
+  <g filter="url(#massa)"><g mask="url(#buraco-c)" fill="#8f63d9"><rect x="52" y="104" width="66" height="66" rx="10"/><circle cx="124" cy="138" r="11"/></g></g>
+  <!-- peça D (laranja), quase encaixando -->
+  <g transform="translate(14 -10) rotate(9 156 138)">
+    <ellipse cx="160" cy="176" rx="34" ry="5" fill="#5a3a00" opacity=".18" filter="url(#chao)"/>
+    <g filter="url(#massa)"><g mask="url(#buraco-d)" fill="#ff7a3d"><rect x="122" y="104" width="66" height="66" rx="10"/></g></g>
+  </g>
+  <!-- folhinha desenhada na peça verde -->
+  <g transform="translate(82 64)"><path d="M-14 10C-15-6-4-16 14-14 15 2 6 12-14 10Z" fill="#c9f29c"/><path d="M-11 7C-4 0 2-5 9-9" fill="none" stroke="#3f9a37" stroke-width="2.6" stroke-linecap="round"/></g>
+  <!-- solzinho na peça azul -->
+  <circle cx="158" cy="64" r="11" fill="#ffd447"/><g stroke="#ffd447" stroke-width="3.4" stroke-linecap="round"><path d="M158 45v-4M158 83v4M139 64h-4M177 64h4M145 51l-3-3M171 51l3-3M145 77l-3 3M171 77l3 3"/></g>
+  <!-- brilhos -->
+  <g stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".9"><path d="M214 34l8-12"/><path d="M222 52l12-4"/></g>
+</svg>

@@ -37,3 +37,29 @@ Para melhorar: teste o bot, anote respostas ruins, corrija a instrução ou o co
 
 ## Teste rápido
 Com o Worker publicado, abra o site, clique em **EcoBot** e pergunte "Por que reciclar?". Depois teste fora do tema ("quem ganhou o jogo?"): ele deve voltar para a natureza com gentileza.
+
+## Se o EcoBot parar de responder (diagnóstico)
+Em novembro de 2026, o chat abria, mas sempre respondia "Ops! Minha floresta mágica da IA não respondeu".
+Causa encontrada: **o código publicado na Cloudflare era uma versão antiga**, diferente deste `worker.js`.
+Ela usava o modelo `gemini-1.5-flash`, que o Google desligou. O Google respondia
+`404 models/gemini-1.5-flash is not found`, e o Worker devolvia erro 502 para o site.
+O site, o endereço `ECOBOT_URL` e o CORS estavam corretos.
+
+**Como corrigir (precisa ser feito por quem tem acesso à conta Cloudflare onde está o Worker `ecobot`):**
+1. Cloudflare → **Workers & Pages** → `ecobot` → **Edit code**.
+2. Apague tudo, cole o conteúdo **atual** de `servidor/worker.js` e clique em **Deploy**.
+3. Confira em **Settings → Variables and Secrets** se o segredo `GEMINI_API_KEY` existe. Não é preciso colar a chave de novo, se ela já estiver lá.
+4. (Opcional) Se um dia o Google aposentar o `gemini-2.5-flash`, crie a variável de **texto** `GEMINI_MODELO`
+   com o nome do modelo novo (veja a lista em aistudio.google.com) e faça **Deploy**. Não precisa mudar o código.
+
+**Como testar:** abra o site, aperte **F12 → Console** e mande uma pergunta ao EcoBot.
+- Se funcionar, a resposta aparece no chat.
+- Se der erro, o console mostra `EcoBot: o servidor respondeu HTTP ...` com o motivo:
+  - `ia-indisponivel` = problema no Google (modelo ou chave);
+  - `sem-chave` = falta o segredo `GEMINI_API_KEY`;
+  - `muitos-pedidos` = limite por minuto;
+  - `Origem não permitida` = o endereço do site não está em `ORIGENS_PERMITIDAS`.
+
+Atenção: para testar no computador, abra o site pelo **Live Server** (`http://127.0.0.1:5500`). Abrindo o
+arquivo direto (dois cliques no `index.html`), o novo Worker recusa o pedido, porque a origem `file://`
+não está na lista de origens permitidas.

@@ -4,15 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EcoKids - Quebra-cabeça</title>
-  <link rel="stylesheet" href="css/style.css?v=10">
-  <script>try{if(localStorage.getItem("ecokids-tema")==="escuro")document.documentElement.dataset.tema="escuro"}catch(e){}</script>
+  <meta name="description" content="EcoKids: jogos e dicas rápidas com o Tito para crianças de 6 a 11 anos aprenderem a cuidar do planeta.">
+  <meta name="theme-color" content="#1d5a3b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css?v=23">
+  <script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("ecokids-tema");if(t==="escuro"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.tema="escuro"}catch(e){}</script>
 </head>
 <body>
   <main class="page game-page puzzle-page">
     <!-- Cabeçalho: logo e menu (igual em todas as páginas) -->
     <header class="site-header">
       <a class="logo-pill" href="index.html"><svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M51 11C31 12 15 21 13 42c11 3 23 0 31-8 8-8 8-17 7-23Z"/><path d="M14 47c8-12 17-20 30-27"/></svg><span>EcoKids</span></a>
-      <nav class="nav-links" aria-label="Navegação principal">
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="menu-principal"><span class="menu-bars" aria-hidden="true"><span></span><span></span><span></span></span><span class="menu-label">Menu</span></button>
+      <nav class="nav-links" id="menu-principal" aria-label="Navegação principal">
         <a href="index.html">Início</a>
         <a href="aprenda.html">Aprenda</a>
         <a href="jogos.html">Jogos</a>
@@ -26,14 +32,14 @@
         <div class="game-bar">
           <a class="clay-button light" href="jogos.html">Voltar</a>
           <h1>Quebra-cabeça</h1>
-          <span class="score-pill clay" id="placar">Peças certas: 0</span>
+          <span class="score-pill clay" id="placar" aria-live="polite">Peças certas: 0</span>
         </div>
         <div class="puzzle-layout" id="layout-quebra">
           <!-- As peças são criadas pelo JavaScript (bloco 6), que também escolhe a figura da vez (veja a lista "figuras" no script) -->
           <div class="puzzle-board clay" id="tabuleiro"></div>
           <aside class="puzzle-guide">
             <h2>Monte a figura</h2>
-            <img id="modelo" src="imagens/quebra-cabeca-1-quadrado.png" alt="Modelo completo do quebra-cabeça">
+            <img id="modelo" src="imagens/quebra-cabeca-1-quadrado.png" alt="Modelo completo do quebra-cabeça" width="900" height="900">
             <p>Toque em duas peças para trocar de lugar.</p>
           </aside>
         </div>
@@ -47,6 +53,7 @@
       <div></div>
     </div>
   </main>
-  <script src="js/script.js?v=11"></script>
+  <script src="js/script.js?v=21"></script>
+  <script src="js/tito.js?v=21"></script>
 </body>
 </html>

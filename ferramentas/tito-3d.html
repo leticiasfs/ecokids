@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>EcoKids - Teste do Tito 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="../css/style.css?v=23">
+  <script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("ecokids-tema");if(t==="escuro"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.tema="escuro"}catch(e){}</script>
+  <style>
+    /* estilos só desta página de teste */
+    .teste { position: relative; z-index: 3; width: var(--container); margin: 0 auto; padding-bottom: 40px; }
+    .teste h1 { color: var(--heading); font: 700 clamp(1.8rem, 1.4rem + 1.5vw, 2.6rem)/1.1 var(--font-title); margin: 10px 0 6px; }
+    .teste > p { max-width: 60em; color: var(--text-soft); }
+    .palco { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 18px; }
+    .quadro { position: relative; padding: 16px; border-radius: var(--radius-lg); background: var(--surface); box-shadow: var(--clay-shadow); text-align: center; }
+    .quadro h2 { color: var(--heading); font: 700 1.3rem/1.2 var(--font-title); margin-bottom: 8px; }
+    .quadro .lugar { position: relative; height: min(56vh, 520px); display: flex; align-items: flex-end; justify-content: center; }
+    .quadro img { height: 100%; width: auto; }
+    #lugar-3d img { opacity: .18; filter: grayscale(1); }   /* silhueta de referência até o modelo carregar */
+    .acoes { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 16px; }
+    .acoes label.clay-button { cursor: pointer; }
+    .acoes input[type=file] { position: absolute; width: 1px; height: 1px; opacity: 0; }
+    #estado { margin-top: 14px; padding: 14px 18px; border-radius: 18px; background: var(--surface-2); font-weight: 700; }
+    #estado.erro { background: var(--bad-bg); color: var(--bad-ink); }
+    #lista { margin: 14px 0 0; padding: 0; list-style: none; display: grid; gap: 6px; }
+    #lista li { padding: 8px 14px; border-radius: 14px; background: var(--surface); }
+    @media (max-width: 760px) { .palco { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <header class="site-header">
+      <a class="logo-pill" href="../index.html"><span>EcoKids</span></a>
+      <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Mudar para o tema escuro"><svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3 7 7M17 17l1.7 1.7M5.3 18.7 7 17M17 7l1.7-1.7"/></svg><svg class="lua" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z"/></svg></button>
+    </header>
+    <section class="teste">
+      <h1>Teste do Tito 3D</h1>
+      <p>Esta página não aparece no menu do site. Ela serve para conferir um modelo 3D do Tito <strong>antes</strong> de colocá-lo no site: compara com o Tito atual e verifica se o arquivo tem tudo o que o código precisa (veja <code>docs/tito-guia-visual.md</code>). Passe o mouse pelo palco: os olhos e a cabeça devem acompanhar.</p>
+
+      <div class="acoes">
+        <label class="clay-button yellow" for="arquivo">Escolher um arquivo .glb</label>
+        <input id="arquivo" type="file" accept=".glb,model/gltf-binary">
+        <button class="clay-button light" id="do-projeto" type="button">Carregar modelos/tito.glb</button>
+      </div>
+      <p id="estado" aria-live="polite">Nenhum modelo carregado ainda. O modelo 3D do Tito ainda não existe no projeto: quando ele for criado, escolha o arquivo acima.</p>
+      <ul id="lista"></ul>
+
+      <div class="palco">
+        <div class="quadro">
+          <h2>Tito atual (imagem)</h2>
+          <div class="lugar"><img src="../imagens/mascote-hero-anexo.png" alt="Tito atual, para comparar" width="526" height="904"></div>
+        </div>
+        <div class="quadro">
+          <h2>Modelo 3D</h2>
+          <div class="lugar" id="lugar-3d"><img id="alvo-3d" src="../imagens/mascote-hero-anexo.png" alt="Tito 3D em teste" width="526" height="904"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="../js/script.js?v=21"></script>
+  <script src="../js/tito.js?v=21"></script>
+  <script>
+    // Lógica só desta página: carrega o modelo escolhido e mostra o relatório
+    (function () {
+      const estado = document.getElementById("estado"), lista = document.getElementById("lista");
+      let carregou = false;
+      function mostrar(texto, erro) { estado.textContent = texto; estado.className = erro ? "erro" : ""; }
+      function item(ok, texto, opcional) {
+        const li = document.createElement("li");
+        li.textContent = (ok ? "✅ " : opcional ? "➖ " : "❌ ") + texto;
+        lista.appendChild(li);
+      }
+      async function testar(caminho, nome) {
+        if (carregou) { mostrar("Recarregue a página (F5) para testar outro arquivo."); return; }
+        lista.innerHTML = "";
+        mostrar("Carregando " + nome + "...");
+        try {
+          const r = await window.EcoKidsTito3D.carregar(document.getElementById("alvo-3d"), caminho);
+          carregou = true;
+          mostrar("Modelo carregado: " + nome + ". Compare com o Tito atual e confira a lista abaixo.");
+          item(r.tamanhoMB <= 5, "Tamanho do arquivo: " + r.tamanhoMB.toFixed(2) + " MB (ideal até 2 MB, máximo 5 MB)");
+          item(r.triangulos <= 30000, "Triângulos: " + r.triangulos.toLocaleString("pt-BR") + " (até cerca de 30 mil)");
+          item(!!r.cabeca, r.cabeca ? "Cabeça encontrada: " + r.cabeca : "Cabeça NÃO encontrada (o objeto deve se chamar Cabeca ou Head)");
+          item(r.olhos.length === 2, r.olhos.length === 2 ? "Dois olhos encontrados: " + r.olhos.join(" e ") : "Olhos encontrados: " + r.olhos.length + " de 2 (OlhoE e OlhoD, ou Eye_L e Eye_R)");
+          item(r.piscar, r.piscar ? "Piscar: morph target encontrado" : "Piscar NÃO encontrado (shape key chamada piscar ou blink)");
+          item(r.sorriso, r.sorriso ? "Sorriso: morph target encontrado" : "Sorriso (opcional): shape key sorriso ou smile", true);
+          item(r.surpreso, r.surpreso ? "Surpresa: morph target encontrado" : "Surpresa (opcional): shape key surpreso ou surprise", true);
+          item(!!r.animacao, r.animacao ? "Animação encontrada: " + r.animacao : "Animação parado/idle (opcional; sem ela o código faz uma respiração simples)", true);
+          item(true, "Proporção largura/altura do modelo: " + r.proporcao + " (o Tito atual tem cerca de 0.58)");
+          if (r.morphsEncontrados.length) item(true, "Todos os morph targets do arquivo: " + r.morphsEncontrados.join(", "));
+        } catch (e) {
+          const semArquivo = /não encontrado|Failed to fetch|NetworkError/i.test(e.message);
+          mostrar(semArquivo
+            ? "O arquivo modelos/tito.glb ainda não existe no projeto (ou a página foi aberta direto do disco: para este botão, use o Live Server). Você também pode usar \"Escolher um arquivo .glb\"."
+            : "Não deu para carregar o modelo: " + e.message, true);
+          console.error("Teste do Tito 3D:", e);
+        }
+      }
+      document.getElementById("arquivo").addEventListener("change", function () {
+        const f = this.files[0];
+        if (f) testar(URL.createObjectURL(f), f.name);
+      });
+      document.getElementById("do-projeto").addEventListener("click", function () { testar("../modelos/tito.glb", "modelos/tito.glb"); });
+    })();
+  </script>
+</body>
+</html>
