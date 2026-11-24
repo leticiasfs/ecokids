@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200">
+  <!-- EcoKids: ilustração do Quiz (desenho próprio do projeto, estilo massinha) -->
+  <defs>
+    <filter id="massa" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/>
+      <feSpecularLighting in="b" surfaceScale="5" specularConstant=".75" specularExponent="30" lighting-color="#fff" result="s"><feDistantLight azimuth="225" elevation="48"/></feSpecularLighting>
+      <feComposite in="s" in2="SourceAlpha" operator="in" result="brilho"/>
+      <feOffset in="SourceAlpha" dx="-5" dy="-7"/><feGaussianBlur stdDeviation="5" result="o"/>
+      <feComposite in="SourceAlpha" in2="o" operator="arithmetic" k2="1" k3="-1" result="borda"/>
+      <feFlood flood-color="#1a1000" flood-opacity=".3"/><feComposite in2="borda" operator="in" result="sombra"/>
+      <feMerge result="m"><feMergeNode in="SourceGraphic"/><feMergeNode in="sombra"/></feMerge>
+      <feComposite in="m" in2="brilho" operator="arithmetic" k2="1" k3="1"/>
+    </filter>
+    <filter id="chao" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+  </defs>
+  <ellipse cx="116" cy="186" rx="74" ry="8" fill="#001a33" opacity=".28" filter="url(#chao)"/>
+  <!-- balãozinho de trás (amarelo, com reticências) -->
+  <g filter="url(#massa)" fill="#ffc531"><rect x="150" y="18" width="74" height="52" rx="24"/><path d="M200 64l18 18-4-22Z"/></g>
+  <g fill="#8a5a00"><circle cx="171" cy="44" r="5"/><circle cx="187" cy="44" r="5"/><circle cx="203" cy="44" r="5"/></g>
+  <!-- balão principal (creme) -->
+  <g filter="url(#massa)" fill="#fff7e4"><rect x="26" y="40" width="148" height="116" rx="40"/><path d="M58 146l-18 34 44-26Z"/></g>
+  <!-- ponto de interrogação -->
+  <g filter="url(#massa)">
+    <path d="M80 80a21 21 0 1 1 30 19c-7 3-10 7-10 15" fill="none" stroke="#2f86c6" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+    <circle cx="100" cy="136" r="9.5" fill="#2f86c6"/>
+  </g>
+  <!-- estrelinha -->
+  <g transform="translate(36 34) scale(.5)" filter="url(#massa)"><path d="M0-36 9.99-13.75 34.24-11.12 16.17 5.25 21.16 29.12 0 17-21.16 29.12-16.17 5.25-34.24-11.12-9.99-13.75Z" fill="#ffd447" stroke="#ffd447" stroke-width="9" stroke-linejoin="round"/></g>
+  <g stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".85"><path d="M196 104l14 4"/><path d="M190 122l11 9"/></g>
+</svg>

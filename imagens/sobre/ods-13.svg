@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 200">
+  <!-- EcoKids: ícone do ODS 13 - Ação contra a mudança do clima (desenho próprio, estilo massinha; não é o ícone oficial da ONU) -->
+  <defs>
+    <filter id="massa" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="5" result="b"/>
+      <feSpecularLighting in="b" surfaceScale="5" specularConstant=".75" specularExponent="30" lighting-color="#fff" result="s"><feDistantLight azimuth="225" elevation="48"/></feSpecularLighting>
+      <feComposite in="s" in2="SourceAlpha" operator="in" result="brilho"/>
+      <feOffset in="SourceAlpha" dx="-5" dy="-7"/><feGaussianBlur stdDeviation="5" result="o"/>
+      <feComposite in="SourceAlpha" in2="o" operator="arithmetic" k2="1" k3="-1" result="borda"/>
+      <feFlood flood-color="#001a05" flood-opacity=".3"/><feComposite in2="borda" operator="in" result="sombra"/>
+      <feMerge result="m"><feMergeNode in="SourceGraphic"/><feMergeNode in="sombra"/></feMerge>
+      <feComposite in="m" in2="brilho" operator="arithmetic" k2="1" k3="1"/>
+    </filter>
+    <filter id="chao" x="-30%" y="-100%" width="160%" height="300%"><feGaussianBlur stdDeviation="5"/></filter>
+    <clipPath id="terra"><circle cx="112" cy="112" r="58"/></clipPath>
+  </defs>
+  <ellipse cx="116" cy="184" rx="70" ry="8" fill="#001a05" opacity=".32" filter="url(#chao)"/>
+  <!-- sol atrás -->
+  <g stroke="#ffd447" stroke-width="7" stroke-linecap="round"><path d="M178 14v-8M216 52h8M205 25l6-6M151 25l-6-6M205 79l6 6"/></g>
+  <g filter="url(#massa)"><circle cx="178" cy="52" r="26" fill="#ffc531"/></g>
+  <!-- planeta -->
+  <g filter="url(#massa)"><circle cx="112" cy="112" r="58" fill="#2f86c6"/></g>
+  <g clip-path="url(#terra)" fill="#6cc04a">
+    <path d="M60 86c12-14 30-16 40-6 6 7-2 16 6 22 10 7 6 22-6 24-14 2-14 14-26 14-16 0-24-22-22-40 1-6 4-10 8-14Z"/>
+    <path d="M124 64c14-4 30 2 36 14 4 9-6 12-4 22 3 14 18 18 16 32-2 12-18 22-30 16-12-6-4-20-14-28-10-8-22-4-24-18-2-12 8-15 20-18Z"/>
+  </g>
+  <path d="M74 84a46 46 0 0 1 30-18" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" opacity=".55"/>
+  <!-- folha (cuidar do clima) -->
+  <g transform="translate(58 158) rotate(-20)" filter="url(#massa)"><path d="M-26 12C-28-12-8-26 26-22 26 6 6 20-26 12Z" fill="#a7e06a"/></g>
+  <path d="M-20 8C-8-2 4-10 18-16" transform="translate(58 158) rotate(-20)" fill="none" stroke="#3f9a37" stroke-width="3.4" stroke-linecap="round"/>
+  <!-- nuvem -->
+  <g filter="url(#massa)" fill="#fff7e4"><path d="M168 170c-14 0-18-14-8-20-2-13 12-20 22-14 6-12 26-12 30 4 12-1 20 12 12 20 4 6 0 10-6 10Z"/></g>
+</svg>

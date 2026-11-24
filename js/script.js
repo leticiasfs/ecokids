@@ -4,13 +4,18 @@
    só faz algo se a página tiver o elemento que ele procura.
    Blocos: 0) tema claro/escuro  1) ícones  2) janela do Aprenda  3) jogo da memória
            4) quiz  5) lixeira certa  6) quebra-cabeça  7) tela final
+           8) caça-palavras  9) palavras cruzadas  10) EcoBot
+           11) menu hambúrguer  12) decoração (folhas e confete)
+   A interatividade do Tito (olhar, respirar, modelo 3D) fica em js/tito.js.
    ============================================================ */
+
+// Desenhos ilustrados usados na janela do Aprenda (bloco 2)
+const ARTE = {"reciclar": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M14 22h36l-3 31a5 5 0 0 1-5 4.5H22a5 5 0 0 1-5-4.5Z\" fill=\"#58b043\"/><path d=\"M17 24h8l1 30h-3a4 4 0 0 1-4-3.6Z\" fill=\"#fff\" opacity=\".28\"/><path d=\"M45 24h5l-2.6 28a5 5 0 0 1-3 4Z\" fill=\"#1d6a2a\" opacity=\".25\"/><rect x=\"11\" y=\"13\" width=\"42\" height=\"11\" rx=\"5.5\" fill=\"#3f9a37\"/><rect x=\"25\" y=\"8\" width=\"14\" height=\"8\" rx=\"4\" fill=\"#3f9a37\"/><rect x=\"14\" y=\"14.5\" width=\"36\" height=\"3\" rx=\"1.5\" fill=\"#fff\" opacity=\".35\"/><g transform=\"translate(17.2 25.6) scale(1.25)\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5\"/><path d=\"M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12\"/><path d=\"m14 16-3 3 3 3\"/><path d=\"M8.293 13.596 7.196 9.5 3.1 10.598\"/><path d=\"m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843\"/><path d=\"m13.378 9.633 4.096 1.098 1.097-4.096\"/></g></svg>", "agua": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M32 5C22 19 12 29 12 40a20 20 0 0 0 40 0C52 29 42 19 32 5Z\" fill=\"#3b9de3\"/><path d=\"M32 5C27 12 22 18 18 24c6-3 11-9 14-19Z\" fill=\"#fff\" opacity=\".35\"/><path d=\"M46 36c2 9-4 17-13 19 10 1 19-6 19-15 0-2-1-4-2-6Z\" fill=\"#1c64b4\" opacity=\".3\"/><circle cx=\"25\" cy=\"40\" r=\"3\" fill=\"#17402d\"/><circle cx=\"39\" cy=\"40\" r=\"3\" fill=\"#17402d\"/><path d=\"M26 47q6 6 12 0\" fill=\"none\" stroke=\"#17402d\" stroke-width=\"3\" stroke-linecap=\"round\"/><circle cx=\"22\" cy=\"46\" r=\"2.6\" fill=\"#ff9aa2\" opacity=\".7\"/><circle cx=\"42\" cy=\"46\" r=\"2.6\" fill=\"#ff9aa2\" opacity=\".7\"/></svg>", "energia": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M32 4a20 20 0 0 0-11 36c2 2 3 4 3 7h16c0-3 1-5 3-7A20 20 0 0 0 32 4Z\" fill=\"#ffd23f\"/><path d=\"M20 14a18 18 0 0 0-4 14c1-9 6-14 13-16Z\" fill=\"#fff\" opacity=\".5\"/><path d=\"M45 20c3 9-1 17-8 21l-1 6h4c0-3 1-5 3-7a20 20 0 0 0 2-20Z\" fill=\"#e8a000\" opacity=\".3\"/><rect x=\"23\" y=\"47\" width=\"18\" height=\"6\" rx=\"3\" fill=\"#9fb2b8\"/><rect x=\"26\" y=\"53\" width=\"12\" height=\"6\" rx=\"3\" fill=\"#7e9399\"/><path d=\"M32 40V28\" stroke=\"#3f9a37\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M32 30c-6 0-9-3-9-8 6 0 9 3 9 8Zm0 0c6 0 9-3 9-8-6 0-9 3-9 8Z\" fill=\"#58b043\"/></svg>", "folha": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"57\" rx=\"22\" ry=\"4\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M8 56c1-9 10-14 24-14s23 5 24 14Z\" fill=\"#9a6a3d\"/><path d=\"M13 54c3-6 9-9 17-10-6 2-11 6-12 10Z\" fill=\"#fff\" opacity=\".25\"/><path d=\"M32 44V24\" stroke=\"#3f9a37\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><path d=\"M32 30C20 32 11 26 10 14c13-1 22 5 22 16Z\" fill=\"#6cc04a\"/><path d=\"M32 24c0-12 8-19 22-19 0 13-8 20-22 19Z\" fill=\"#58b043\"/><path d=\"M14 17c5 0 10 3 14 8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" opacity=\".5\"/></svg>"};
 
 // 0) TEMA CLARO / ESCURO ------------------------------------
 // Guarda a escolha em localStorage ("ecokids-tema") e troca o atributo data-tema do <html>.
+// Se a pessoa nunca escolheu, o script do <head> segue o tema do sistema (claro ou escuro).
 // As cores mudam aos poucos porque o CSS anima as variáveis de cor.
-const ARTE = {"reciclar": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M14 22h36l-3 31a5 5 0 0 1-5 4.5H22a5 5 0 0 1-5-4.5Z\" fill=\"#58b043\"/><path d=\"M17 24h8l1 30h-3a4 4 0 0 1-4-3.6Z\" fill=\"#fff\" opacity=\".28\"/><path d=\"M45 24h5l-2.6 28a5 5 0 0 1-3 4Z\" fill=\"#1d6a2a\" opacity=\".25\"/><rect x=\"11\" y=\"13\" width=\"42\" height=\"11\" rx=\"5.5\" fill=\"#3f9a37\"/><rect x=\"25\" y=\"8\" width=\"14\" height=\"8\" rx=\"4\" fill=\"#3f9a37\"/><rect x=\"14\" y=\"14.5\" width=\"36\" height=\"3\" rx=\"1.5\" fill=\"#fff\" opacity=\".35\"/><g transform=\"translate(17.2 25.6) scale(1.25)\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5\"/><path d=\"M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12\"/><path d=\"m14 16-3 3 3 3\"/><path d=\"M8.293 13.596 7.196 9.5 3.1 10.598\"/><path d=\"m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843\"/><path d=\"m13.378 9.633 4.096 1.098 1.097-4.096\"/></g></svg>", "agua": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M32 5C22 19 12 29 12 40a20 20 0 0 0 40 0C52 29 42 19 32 5Z\" fill=\"#3b9de3\"/><path d=\"M32 5C27 12 22 18 18 24c6-3 11-9 14-19Z\" fill=\"#fff\" opacity=\".35\"/><path d=\"M46 36c2 9-4 17-13 19 10 1 19-6 19-15 0-2-1-4-2-6Z\" fill=\"#1c64b4\" opacity=\".3\"/><circle cx=\"25\" cy=\"40\" r=\"3\" fill=\"#17402d\"/><circle cx=\"39\" cy=\"40\" r=\"3\" fill=\"#17402d\"/><path d=\"M26 47q6 6 12 0\" fill=\"none\" stroke=\"#17402d\" stroke-width=\"3\" stroke-linecap=\"round\"/><circle cx=\"22\" cy=\"46\" r=\"2.6\" fill=\"#ff9aa2\" opacity=\".7\"/><circle cx=\"42\" cy=\"46\" r=\"2.6\" fill=\"#ff9aa2\" opacity=\".7\"/></svg>", "energia": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M32 4a20 20 0 0 0-11 36c2 2 3 4 3 7h16c0-3 1-5 3-7A20 20 0 0 0 32 4Z\" fill=\"#ffd23f\"/><path d=\"M20 14a18 18 0 0 0-4 14c1-9 6-14 13-16Z\" fill=\"#fff\" opacity=\".5\"/><path d=\"M45 20c3 9-1 17-8 21l-1 6h4c0-3 1-5 3-7a20 20 0 0 0 2-20Z\" fill=\"#e8a000\" opacity=\".3\"/><rect x=\"23\" y=\"47\" width=\"18\" height=\"6\" rx=\"3\" fill=\"#9fb2b8\"/><rect x=\"26\" y=\"53\" width=\"12\" height=\"6\" rx=\"3\" fill=\"#7e9399\"/><path d=\"M32 40V28\" stroke=\"#3f9a37\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M32 30c-6 0-9-3-9-8 6 0 9 3 9 8Zm0 0c6 0 9-3 9-8-6 0-9 3-9 8Z\" fill=\"#58b043\"/></svg>", "folha": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"57\" rx=\"22\" ry=\"4\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M8 56c1-9 10-14 24-14s23 5 24 14Z\" fill=\"#9a6a3d\"/><path d=\"M13 54c3-6 9-9 17-10-6 2-11 6-12 10Z\" fill=\"#fff\" opacity=\".25\"/><path d=\"M32 44V24\" stroke=\"#3f9a37\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><path d=\"M32 30C20 32 11 26 10 14c13-1 22 5 22 16Z\" fill=\"#6cc04a\"/><path d=\"M32 24c0-12 8-19 22-19 0 13-8 20-22 19Z\" fill=\"#58b043\"/><path d=\"M14 17c5 0 10 3 14 8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" opacity=\".5\"/></svg>"};
-
 (function () {
   const botao = document.querySelector(".theme-toggle");
   if (!botao) return;
@@ -153,6 +158,8 @@ if (janela) {
     janela.hidden = false;
     corpo.scrollTop = 0;
     atualizarDica();
+    // Acessibilidade: o foco do teclado vai para dentro da janela (botão Fechar)
+    janela.querySelector(".modal-close").focus();
   }
   // Mostra "Role para ver mais" enquanto ainda tem conteúdo embaixo
   function atualizarDica() {
@@ -161,15 +168,31 @@ if (janela) {
   }
   corpo.addEventListener("scroll", atualizarDica);
   window.addEventListener("resize", atualizarDica);
-  function fecharJanela() { janela.hidden = true; }
+  let cartaoAberto = null;   // cartão que abriu a janela (o foco volta para ele ao fechar)
+  function fecharJanela() {
+    if (janela.hidden) return;
+    janela.hidden = true;
+    if (cartaoAberto) cartaoAberto.focus();
+  }
 
-  // Cada cartão tem data-tema="lixeira" (ou agua, energia, natureza)
-  document.querySelectorAll("[data-tema]").forEach(function (cartao) {
-    cartao.addEventListener("click", function () { abrirJanela(cartao.dataset.tema); });
+  // Cada cartão tem data-tema="lixeira" (ou agua, energia, natureza).
+  // ".learn-card" é importante: o <html> também usa data-tema="escuro" (tema escuro) e não é um cartão.
+  document.querySelectorAll(".learn-card[data-tema]").forEach(function (cartao) {
+    cartao.addEventListener("click", function () { cartaoAberto = cartao; abrirJanela(cartao.dataset.tema); });
   });
   janela.addEventListener("click", function (e) { if (e.target === janela) fecharJanela(); }); // clicar fora
   janela.querySelector(".modal-close").addEventListener("click", fecharJanela);
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") fecharJanela(); });
+  document.addEventListener("keydown", function (e) {
+    if (janela.hidden) return;
+    if (e.key === "Escape") fecharJanela();
+    // Tab fica "preso" dentro da janela enquanto ela está aberta
+    if (e.key === "Tab") {
+      const focaveis = janela.querySelectorAll("button, [href], [tabindex]:not([tabindex='-1']), video");
+      const primeiro = focaveis[0], ultimo = focaveis[focaveis.length - 1];
+      if (e.shiftKey && document.activeElement === primeiro) { e.preventDefault(); ultimo.focus(); }
+      else if (!e.shiftKey && document.activeElement === ultimo) { e.preventDefault(); primeiro.focus(); }
+    }
+  });
 }
 
 /* ---------- 3) JOGO DA MEMÓRIA ---------- */
@@ -472,14 +495,21 @@ if (tabuleiro) {
   }
 
   function clicar(posicao) {
-    if (selecionada === null) { selecionada = posicao; desenhar(); return; }
+    if (selecionada === null) {
+      selecionada = posicao; desenhar();
+      if (tabuleiro.children[posicao]) tabuleiro.children[posicao].focus({ preventScroll: true });
+      return;
+    }
     // segunda peça escolhida: troca as duas de lugar
     const temp = ordem[selecionada];
     ordem[selecionada] = ordem[posicao];
     ordem[posicao] = temp;
     selecionada = null;
     trocas++;
-    if (desenhar() === total) {
+    const certasAgora = desenhar();
+    // as peças são redesenhadas: devolve o foco do teclado para a peça que foi tocada
+    if (tabuleiro.children[posicao]) tabuleiro.children[posicao].focus({ preventScroll: true });
+    if (certasAgora === total) {
       registrarConclusao(figura);
       // quanto menos trocas, mais estrelas (com folga: 1,3 troca por peça já dá 5 estrelas)
       const estrelas = estrelasPor(total * 1.3 / trocas, 1);
@@ -950,6 +980,9 @@ if (botaoDeNovo) {
         })
       });
       const d = await r.json().catch(function () { return {}; });
+      // O erro real vai para o console (F12), para quem cuida do site descobrir o problema.
+      // A criança vê só a mensagem amigável.
+      if (!r.ok || !d.texto) console.error("EcoBot: o servidor respondeu HTTP " + r.status, d);
       if (r.status === 429 || d.erro === "muitos-pedidos") return "Estou com muitas perguntas agora! Espere um minutinho e tente de novo. ⏳";
       if (!r.ok || !d.texto) return "Ops! Minha floresta mágica da IA não respondeu. Tente de novo mais tarde! 🌳";
       return d.texto;
@@ -1011,4 +1044,82 @@ if (botaoDeNovo) {
     s.onerror = function () {};
     document.head.appendChild(s);
   }
+})();
+
+/* ---------- 11) MENU HAMBÚRGUER (celular e tablet) ---------- */
+// O botão "Menu" só aparece em telas pequenas (CSS). Ele abre e fecha a lista de links.
+(function () {
+  const cabecalho = document.querySelector(".site-header");
+  const botao = cabecalho && cabecalho.querySelector(".menu-toggle");
+  if (!botao) return;
+  const menu = document.getElementById(botao.getAttribute("aria-controls"));
+  const rotulo = botao.querySelector(".menu-label");
+
+  function estaAberto() { return cabecalho.classList.contains("menu-aberto"); }
+  function abrirMenu(abrir, peloTeclado) {
+    cabecalho.classList.toggle("menu-aberto", abrir);
+    botao.setAttribute("aria-expanded", abrir ? "true" : "false");
+    if (rotulo) rotulo.textContent = abrir ? "Fechar" : "Menu";
+    // quem usa teclado vai direto para o primeiro link
+    if (abrir && peloTeclado) { const primeiro = menu.querySelector("a, button"); if (primeiro) primeiro.focus(); }
+  }
+  // e.detail === 0 quando o botão foi acionado pelo teclado (Enter ou Espaço)
+  botao.addEventListener("click", function (e) { abrirMenu(!estaAberto(), e.detail === 0); });
+  // Fecha com Esc, ao tocar fora do menu ou ao escolher um link
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && estaAberto()) { abrirMenu(false); botao.focus(); }
+  });
+  document.addEventListener("click", function (e) {
+    if (estaAberto() && !cabecalho.contains(e.target)) abrirMenu(false);
+  });
+  menu.addEventListener("click", function (e) { if (e.target.closest("a")) abrirMenu(false); });
+  // Se a tela ficar grande (ex.: girar o tablet), o menu volta ao normal
+  const telaGrande = window.matchMedia("(min-width: 901px)");
+  if (telaGrande.addEventListener) telaGrande.addEventListener("change", function (e) { if (e.matches) abrirMenu(false); });
+})();
+
+/* ---------- 12) DECORAÇÃO: folhas voando e confete na tela final ---------- */
+// Só enfeite (aria-hidden). Não aparece para quem pediu "reduzir movimento" no sistema.
+(function () {
+  const pagina = document.querySelector(".page");
+  if (!pagina || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  function aleatorio(min, max) { return min + Math.random() * (max - min); }
+
+  // Folhinhas caindo devagar no topo da página (à noite viram vaga-lumes, pelo CSS)
+  const folhas = document.createElement("div");
+  folhas.className = "decor-folhas";
+  folhas.setAttribute("aria-hidden", "true");
+  const quantas = window.innerWidth < 640 ? 3 : 6;
+  for (let i = 0; i < quantas; i++) {
+    const folha = document.createElement("span");
+    folha.style.setProperty("--x", (i / quantas * 100 + aleatorio(0, 100 / quantas)).toFixed(1) + "%");
+    folha.style.setProperty("--t", aleatorio(16, 28).toFixed(0) + "px");
+    folha.style.setProperty("--d", aleatorio(15, 26).toFixed(1) + "s");
+    folha.style.setProperty("--atraso", (-aleatorio(0, 24)).toFixed(1) + "s"); // negativo: já começa no meio do caminho
+    folhas.appendChild(folha);
+  }
+  pagina.prepend(folhas);
+
+  // Confete de comemoração na tela final, quando a criança ganhou 3 estrelas ou mais
+  if (!pagina.classList.contains("completion-page")) return;
+  const params = new URLSearchParams(window.location.search);
+  const estrelas = params.has("estrelas") ? parseInt(params.get("estrelas"), 10) : 5;
+  if (!(estrelas >= 3)) return;
+  const cores = ["#5e9e34", "#a9cf4b", "#f4bf3f", "#1f74b8", "#c8473b", "#7a4fc0"];
+  const confete = document.createElement("div");
+  confete.className = "confete";
+  confete.setAttribute("aria-hidden", "true");
+  for (let i = 0; i < 46; i++) {
+    const pedaco = document.createElement("span");
+    pedaco.style.setProperty("--x", aleatorio(0, 100).toFixed(1) + "%");
+    pedaco.style.setProperty("--t", aleatorio(7, 14).toFixed(0) + "px");
+    pedaco.style.setProperty("--c", cores[i % cores.length]);
+    pedaco.style.setProperty("--r", Math.random() < 0.5 ? "50%" : "3px");
+    pedaco.style.setProperty("--d", aleatorio(2.4, 4.2).toFixed(2) + "s");
+    pedaco.style.setProperty("--atraso", aleatorio(0.2, 1.2).toFixed(2) + "s");
+    pedaco.style.setProperty("--vento", aleatorio(-90, 90).toFixed(0) + "px");
+    confete.appendChild(pedaco);
+  }
+  pagina.appendChild(confete);
+  setTimeout(function () { confete.remove(); }, 6000);
 })();

@@ -4,8 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>EcoKids - Quiz</title>
-  <link rel="stylesheet" href="css/style.css?v=10">
-  <script>try{if(localStorage.getItem("ecokids-tema")==="escuro")document.documentElement.dataset.tema="escuro"}catch(e){}</script>
+  <meta name="description" content="EcoKids: jogos e dicas rápidas com o Tito para crianças de 6 a 11 anos aprenderem a cuidar do planeta.">
+  <meta name="theme-color" content="#1d5a3b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css?v=23">
+  <script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("ecokids-tema");if(t==="escuro"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.tema="escuro"}catch(e){}</script>
 </head>
 <body>
   <main class="page quiz-page">
@@ -16,7 +21,7 @@
           <strong id="quiz-numero">Pergunta 1 de 5</strong>
           <div class="progress-track clay"><span id="quiz-barra"></span></div>
         </div>
-        <span class="score-pill clay" id="placar">Acertos: 0</span>
+        <span class="score-pill clay" id="placar" aria-live="polite">Acertos: 0</span>
         <button class="theme-toggle" type="button" aria-pressed="false" aria-label="Mudar para o tema escuro"><svg class="sol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2" fill="currentColor"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.3 5.3 7 7M17 17l1.7 1.7M5.3 18.7 7 17M17 7l1.7-1.7"/></svg><svg class="lua" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.5 14.6A8.6 8.6 0 0 1 9.4 3.5a8.6 8.6 0 1 0 11.1 11.1Z"/></svg></button>
       </div>
       <div class="quiz-question-row">
@@ -35,10 +40,11 @@
         </button>
         <p class="quiz-hint clay" id="quiz-dica" hidden></p>
       </div>
-      <p class="quiz-feedback" id="quiz-feedback"></p>
+      <p class="quiz-feedback" id="quiz-feedback" aria-live="polite"></p>
       <button class="clay-button dark quiz-next" id="quiz-proxima" hidden>Próxima</button>
     </div>
   </main>
-  <script src="js/script.js?v=11"></script>
+  <script src="js/script.js?v=21"></script>
+  <script src="js/tito.js?v=21"></script>
 </body>
 </html>
