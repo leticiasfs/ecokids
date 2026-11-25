@@ -27,10 +27,13 @@ COMO MUDAR AS COISAS
   As cores dos cartões dos jogos são --card-green, --card-coral, --card-brown, --card-blue,
   --card-yellow e --card-purple. Para trocar a cor de um cartão, troque a classe dele no HTML.
 - Texto: abra a página .html e troque o que está entre as tags (<h1>, <p>...).
-- Imagem do quebra-cabeça: troque o arquivo em imagens/ (mantenha o nome) ou o
-  lista "figuras" no bloco "6) QUEBRA-CABEÇA" do js/script.js (as 2 primeiras alternam; a 3a, maior, vem depois).
+- Figuras do quebra-cabeça: a criança escolhe a figura numa tela de seleção. Para colocar uma nova,
+  salve a imagem em imagens/ e copie uma linha da lista "figuras" no bloco "6) QUEBRA-CABEÇA" do
+  js/script.js (id, nome e arquivo). Todas têm 3 x 3 peças; se a imagem não for quadrada, o jogo usa o meio dela.
+  Para a tela de seleção abrir rápido, crie também uma miniatura 320 x 320 em WebP e informe em "miniatura".
 - Perguntas do quiz: em js/script.js, bloco "4) QUIZ", lista "perguntas".
-- Itens da lixeira certa: em js/script.js, bloco "5) LIXEIRA CERTA", lista "itens".
+- Itens da lixeira certa: em js/script.js, bloco "5) LIXEIRA CERTA". Os desenhos ficam em "DESENHOS" e o
+  catálogo em "itens" (19 objetos). Cada partida sorteia 8 (ITENS_POR_PARTIDA), com todas as lixeiras.
 - Conteúdo dos cartões do Aprenda: em js/script.js, bloco "2) JANELA", objeto TEMAS.
 
 PRÓXIMOS PASSOS POSSÍVEIS
@@ -100,3 +103,7 @@ APRENDA, JOGOS E SOBRE (identidade de massinha 3D)
 - Sobre: desenhos dos ODS em imagens/sobre/ (ods-4, ods-13, ods-15; desenhos próprios, não são os ícones
   oficiais da ONU). A placa "Sobre o EcoKids" é a mesma placa de madeira da página inicial.
 - Cabeçalho: a "barra de massinha" com os links e o botão verde da página atual valem para todas as páginas.
+
+- Favicon (ícone da aba): favicon.svg, favicon-32.png e apple-touch-icon.png, na pasta principal.
+- 404.html: página "Ops! Não encontramos essa página." O GitHub Pages mostra ela sozinho em endereços errados.
+- EcoBot: espera no máximo 30 segundos pela resposta (TEMPO_LIMITE no bloco 10 do js/script.js).

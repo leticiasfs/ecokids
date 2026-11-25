@@ -345,8 +345,13 @@ if (gradeMemoria) {
   let tentativas = 0;
 
   // Carta fechada = folha. Carta aberta = a imagem do par.
-  function fechar(botao) {
-    botao.className = "memory-card clay closed";
+  // Tempo (em ms) que as duas cartas erradas ficam abertas antes de desvirar.
+  // Dá para ver as figuras e lembrar delas, sem deixar a criança esperando muito.
+  const ESPERA_ERRO = 800;
+  let travado = false;     // true enquanto as cartas erradas estão desvirando: cliques são ignorados
+
+  function fechar(botao, animar) {
+    botao.className = "memory-card clay closed" + (animar ? " desvira" : "");
     botao.setAttribute("aria-label", "Carta fechada");
     botao.innerHTML = ICONES.folha;
   }
@@ -364,7 +369,7 @@ if (gradeMemoria) {
   });
 
   function virar(botao, carta) {
-    if (viradas.length === 2 || botao.classList.contains("open")) return;
+    if (travado || viradas.length === 2 || botao.classList.contains("open")) return;
     abrir(botao, carta);
     viradas.push({ botao: botao, carta: carta });
     if (viradas.length === 2) {
@@ -377,11 +382,17 @@ if (gradeMemoria) {
         paresAchados++;
         placar.textContent = "Pares: " + paresAchados + " de 6";
         if (paresAchados === 6) setTimeout(function () { terminarJogo("memoria.html", estrelasPor(6 / tentativas, 1), 6, tentativas); }, 900);
-      } else {                                       // errou: desvira depois de 1,2 s
+      } else {                                       // errou: as duas tremem e desviram logo depois
+        travado = true;
+        gradeMemoria.classList.add("esperando");
+        // a segunda carta termina de virar (0,35 s) e só então as duas tremem
+        setTimeout(function () { a.botao.classList.add("errou"); b.botao.classList.add("errou"); }, 360);
         setTimeout(function () {
-          fechar(a.botao); fechar(b.botao);
+          fechar(a.botao, true); fechar(b.botao, true);
           viradas = [];
-        }, 1200);
+          travado = false;
+          gradeMemoria.classList.remove("esperando");
+        }, ESPERA_ERRO);
       }
     }
   }
@@ -502,106 +513,350 @@ if (areaQuiz) {
 /* ---------- 5) LIXEIRA CERTA ---------- */
 const areaLixeiras = document.getElementById("lixeiras");
 if (areaLixeiras) {
-  // Itens do jogo: só imagens (pasta imagens/lixeira/). "alt" é o texto lido por leitores de tela.
+  // Itens do jogo: desenhos de massinha recortados (SVG, fundo transparente), para parecerem objetos de verdade.
+  // O volume vem do filtro "ek-massa" que está no lixeira.html. Cada desenho tem "pistas" do material:
+  //   plástico = translúcido/colorido, fino, amassável (garrafa PET com "pétalas" no fundo e selo PET)
+  //   vidro    = grosso, rígido, com brilhos fortes e fundo espesso       papel/papelão = folha branca ou papelão pardo
+  //   metal    = cinza prateado, com frisos e bordas serrilhadas          orgânico = restos de comida
+  // (As fotos antigas continuam na pasta imagens/lixeira/, mas não são mais usadas.)
+  const M = ' filter="url(#ek-massa)"';
+  const BRILHO = function (x, y, t) {   // estrelinha de brilho (usada no vidro)
+    return '<path d="M' + x + " " + (y - t) + "q" + (t * .2) + " " + (t * .8) + " " + t + " " + t + "q-" + (t * .8) + " " + (t * .2) + "-" + t + " " + t + "q-" + (t * .2) + "-" + (t * .8) + "-" + t + "-" + t + "q" + (t * .8) + "-" + (t * .2) + " " + t + "-" + t + 'Z" fill="#fff"/>';
+  };
+  const SERRILHA = (function () {   // contorno serrilhado da tampinha de metal
+    let d = "";
+    for (let i = 0; i < 42; i++) { const r = i % 2 ? 36 : 31, a = i / 42 * Math.PI * 2; d += (i ? "L" : "M") + (60 + r * Math.cos(a)).toFixed(1) + " " + (62 + r * Math.sin(a) * .92).toFixed(1); }
+    return d + "Z";
+  })();
+  const DESENHOS = {
+    // ---------- PLÁSTICO ----------
+    garrafaPet: '<g' + M + '><rect x="50" y="3" width="20" height="12" rx="3" fill="#2f86c6"/><rect x="47" y="14" width="26" height="5" rx="2.5" fill="#2f86c6"/>' +
+      '<path d="M53 19h14v8c11 5 16 11 16 20v9c-5 3-5 7 0 10v10c-6 2-6 6 0 9v15c0 6-3 9-7 9h-3l-5-5-5 5-5-5-5 5h-3c-4 0-7-3-7-9V85c6-3 6-7 0-9V66c5-3 5-7 0-10v-9c0-9 5-15 16-20Z" fill="#cfeefa" opacity=".8"/></g>' +
+      '<rect x="37" y="60" width="46" height="17" fill="#4fb3e8" opacity=".55"/><text x="60" y="73" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="700" font-size="12" fill="#fff">PET</text>' +
+      '<path d="M44 46c-1 8-1 50 0 56" stroke="#fff" stroke-width="4" stroke-linecap="round" fill="none" opacity=".85"/><g stroke="#8fcbe6" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M50 50l9 5M70 84l-9 4M48 92l8-3M66 40l6 6"/></g>',
+    sacola: '<g' + M + '><path d="M38 42c-3-18 3-28 10-28s9 8 9 16M82 42c3-18-3-28-10-28s-9 8-9 16" fill="none" stroke="#e4ecf4" stroke-width="7" stroke-linecap="round"/><path d="M28 40h64l5 62c0 5-4 8-9 8H32c-5 0-9-3-9-8Z" fill="#f4f8fc"/></g>' +
+      '<g stroke="#c5d4e2" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M38 52c7 12 5 26-2 40M76 50c-5 14 1 28 10 38M50 98c8-5 16-5 24 0"/></g><text x="60" y="78" text-anchor="middle" font-family="Fredoka, sans-serif" font-weight="700" font-size="9.5" fill="#e03c31">OBRIGADO!</text><path d="M52 62q8 6 16 0" stroke="#e03c31" stroke-width="2.4" fill="none" stroke-linecap="round"/>',
+    poteIogurte: '<g' + M + '><path d="M30 42h60l-7 60c-1 5-4 8-9 8H46c-5 0-8-3-9-8Z" fill="#ffffff"/><rect x="24" y="30" width="72" height="15" rx="6" fill="#ff8fb3"/></g>' +
+      '<path d="M33 60h54l-2.6 24H35.6Z" fill="#ffd3e1"/><circle cx="60" cy="72" r="8" fill="#e8413b"/><path d="M55 64c3 2 7 2 10 0l-2-4h-6Z" fill="#58b043"/><g fill="#ffe27a"><circle cx="57" cy="71" r="1"/><circle cx="63" cy="73" r="1"/><circle cx="59" cy="76" r="1"/></g>' +
+      '<path d="M30 37h60" stroke="#ffc2d6" stroke-width="2.4" stroke-linecap="round"/><path d="M38 50l4 46" stroke="#eef2f5" stroke-width="4" stroke-linecap="round"/>',
+    xampu: '<g' + M + '><rect x="56" y="8" width="8" height="10" rx="2" fill="#f2a93b"/><rect x="45" y="16" width="30" height="22" rx="7" fill="#f4b740"/><path d="M36 38h48c4 0 6 3 6 7l-4 56c0 5-4 8-9 8H43c-5 0-9-3-9-8l-4-56c0-4 2-7 6-7Z" fill="#8b5cf6"/></g>' +
+      '<rect x="42" y="56" width="36" height="34" rx="9" fill="#ffffff" opacity=".92"/><g fill="#9fd8f5"><circle cx="52" cy="68" r="5"/><circle cx="64" cy="64" r="3.5"/><circle cx="66" cy="77" r="6"/></g><path d="M40 46v52" stroke="#fff" stroke-width="3.5" stroke-linecap="round" opacity=".5"/>',
+    // ---------- PAPEL E PAPELÃO ----------
+    jornal: '<g transform="rotate(-8 60 60)"><g' + M + '><rect x="20" y="20" width="84" height="76" rx="5" fill="#e3ddcb"/><rect x="14" y="24" width="84" height="76" rx="5" fill="#f6f2e6"/></g>' +
+      '<rect x="22" y="32" width="68" height="10" rx="3" fill="#5b6b66"/><rect x="22" y="48" width="30" height="26" rx="3" fill="#9fc9e0"/><circle cx="44" cy="56" r="4" fill="#ffd23f"/><path d="M24 72l9-9 7 6 6-5 6 8Z" fill="#58b043"/>' +
+      '<g stroke="#a3aeaa" stroke-width="3" stroke-linecap="round"><path d="M58 50h32M58 57h32M58 64h32M58 71h24M22 82h68M22 89h56"/></g></g>',
+    caixaPapelao: '<g' + M + '><path d="M32 52l4-12h48l4 12Z" fill="#8a5a2b"/><path d="M22 52L10 36h40l12 16Z" fill="#dcab6c"/><path d="M98 52l12-16H70L58 52Z" fill="#d29c5c"/><rect x="22" y="50" width="76" height="58" rx="4" fill="#c8955a"/></g>' +
+      '<rect x="54" y="50" width="12" height="58" fill="#e9c98f" opacity=".85"/><g fill="none" stroke="#a8733e" stroke-width="2" stroke-linecap="round"><path d="M12 38q2-3 4 0t4 0 4 0 4 0 4 0 4 0 4 0 4 0M72 38q2-3 4 0t4 0 4 0 4 0 4 0 4 0 4 0 4 0"/></g>' +
+      '<g fill="#7a4a1d"><path d="M32 74l5-7 5 7h-3v8h-4v-8Z"/><path d="M80 74l5-7 5 7h-3v8h-4v-8Z"/></g>',
+    papelAmassado: '<g' + M + '><path d="M28 54l14-24 24-6 22 10 12 22-4 26-18 16-26 2-18-14-8-18Z" fill="#f1efe6" stroke="#c9ccc4" stroke-width="2.5" stroke-linejoin="round"/></g>' +
+      '<g fill="none" stroke-linecap="round"><path d="M34 62c14-4 30 0 48-6M36 78c12 2 28-2 46 2M44 46c10-2 22 0 34-4" stroke="#a9c8ec" stroke-width="2"/><path d="M48 32l-8 66" stroke="#f08a8a" stroke-width="2"/>' +
+      '<path d="M42 30l10 26-22-2M66 24l-14 32 28 8M88 34l-10 30 20 4M52 56l-6 30 24 10M80 64l-6 32" stroke="#b9bfc8" stroke-width="2.6"/></g>',
+    roloPapelao: '<g' + M + '><rect x="36" y="32" width="48" height="74" rx="6" fill="#c8955a"/><ellipse cx="60" cy="32" rx="24" ry="9" fill="#dcab6c"/></g>' +
+      '<ellipse cx="60" cy="32" rx="17" ry="5.5" fill="#7a4a1d"/><g stroke="#a8733e" stroke-width="2.4" stroke-linecap="round"><path d="M37 56l46-14M37 80l46-14M37 104l46-14"/></g>',
+    // ---------- VIDRO ----------
+    garrafaVidro: '<g' + M + '><rect x="52" y="10" width="16" height="34" rx="4" fill="#2f9a5a"/><rect x="49" y="6" width="22" height="8" rx="3" fill="#237a46"/>' +
+      '<path d="M52 40c-12 6-18 14-18 26v38c0 5 4 8 9 8h34c5 0 9-3 9-8V66c0-12-6-20-18-26Z" fill="#46b874" opacity=".9"/></g>' +
+      '<rect x="34" y="100" width="52" height="11" rx="5" fill="#1d6b3e" opacity=".6"/><path d="M43 66v32" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".95"/><path d="M50 70v12" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".7"/>' +
+      '<path d="M56 15v22" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/>' + BRILHO(80, 58, 7) + BRILHO(30, 30, 5),
+    poteVidro: '<g' + M + '><rect x="28" y="30" width="64" height="78" rx="18" fill="#c9f1e3" opacity=".9"/><rect x="34" y="24" width="52" height="10" rx="4" fill="#9fd8c4"/><rect x="30" y="8" width="60" height="18" rx="6" fill="#d6ad55"/></g>' +
+      '<rect x="32" y="96" width="56" height="10" rx="5" fill="#8fd0b8" opacity=".8"/><path d="M40 44v46" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".95"/><path d="M50 40v10" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".7"/>' +
+      '<g stroke="#b08530" stroke-width="2.4" stroke-linecap="round"><path d="M38 13v8M48 13v8M58 13v8M68 13v8M78 13v8"/></g>' + BRILHO(82, 50, 7),
+    copoVidro: '<g' + M + '><path d="M28 22h64l-7 82c-.5 5-4 8-9 8H44c-5 0-8.5-3-9-8Z" fill="#cdeef8" opacity=".9" stroke="#7cc4dc" stroke-width="3" stroke-linejoin="round"/></g>' +
+      '<path d="M35 94h50l-1 10c-.5 5-4 8-9 8H45c-5 0-8.5-3-9-8Z" fill="#a9dcee"/><ellipse cx="60" cy="22" rx="32" ry="5" fill="none" stroke="#fff" stroke-width="3"/>' +
+      '<g stroke="#93d0e4" stroke-width="2.6" stroke-linecap="round"><path d="M45 28l3 62M60 28v62M75 28l-3 62"/></g><path d="M38 32l5 54" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".95"/>' + BRILHO(84, 40, 7) + BRILHO(26, 70, 5),
+    // ---------- METAL ----------
+    lata: '<g' + M + '><rect x="34" y="20" width="52" height="84" rx="12" fill="#d93a3a"/><rect x="36" y="12" width="48" height="14" rx="7" fill="#c9d2d6"/><rect x="36" y="98" width="48" height="12" rx="6" fill="#aab6bb"/></g>' +
+      '<path d="M34 58c10-8 20 8 30 0s16-8 22-2v14c-6-6-12-6-22 2s-20-8-30 0Z" fill="#fff" opacity=".9"/><rect x="52" y="14" width="16" height="7" rx="3.5" fill="#8a979c"/><path d="M41 32v58" stroke="#fff" stroke-width="4" stroke-linecap="round" opacity=".45"/>',
+    lataMilho: '<g' + M + '><rect x="28" y="34" width="64" height="74" rx="8" fill="#c3cdd2"/><ellipse cx="72" cy="20" rx="22" ry="7" fill="#dfe5e8" transform="rotate(-24 72 20)"/></g>' +
+      '<ellipse cx="60" cy="35" rx="31" ry="6" fill="#7f8d93"/><path d="M41 31l-2 3 3 1-2 3" stroke="#e8edf0" stroke-width="2" fill="none"/><rect x="28" y="54" width="64" height="34" fill="#58b043"/>' +
+      '<ellipse cx="60" cy="71" rx="7" ry="12" fill="#ffd23f"/><path d="M53 80c-6-4-8-12-6-18 4 4 6 10 6 18ZM67 80c6-4 8-12 6-18-4 4-6 10-6 18Z" fill="#a3dc6f"/>' +
+      '<g stroke="#9aa8ae" stroke-width="2.2" stroke-linecap="round"><path d="M30 44h60M30 48h60M30 96h60M30 100h60"/></g><path d="M34 56v30" stroke="#fff" stroke-width="3" opacity=".3"/>',
+    tampinha: '<g transform="rotate(-10 60 62)"><g' + M + '><path d="' + SERRILHA + '" fill="#b9c4c9"/><ellipse cx="60" cy="62" rx="27" ry="24" fill="#e03c31"/></g>' +
+      '<ellipse cx="60" cy="62" rx="20" ry="17.5" fill="none" stroke="#fff" stroke-width="2.4" opacity=".8"/><path d="M60 50l3.5 7.5 8 1-6 5.5 1.5 8-7-4-7 4 1.5-8-6-5.5 8-1Z" fill="#ffd23f"/><path d="M38 46c4-6 10-9 16-10" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".7"/></g>',
+    parafusos: '<g transform="rotate(-24 42 60)"><g' + M + '><rect x="25" y="14" width="34" height="13" rx="5" fill="#b8c4c9"/><path d="M36 27h12v58l-6 14-6-14Z" fill="#9fb0b8"/></g><g stroke="#6f8189" stroke-width="2.6" stroke-linecap="round"><path d="M36 38l12-4M36 48l12-4M36 58l12-4M36 68l12-4M36 78l12-4"/></g><path d="M42 16v9" stroke="#6f8189" stroke-width="3" stroke-linecap="round"/></g>' +
+      '<g transform="rotate(22 80 62)"><g' + M + '><ellipse cx="80" cy="20" rx="15" ry="6" fill="#c3ced3"/><path d="M76 22h8v70l-4 12-4-12Z" fill="#aab9c0"/></g></g>',
+    // ---------- ORGÂNICO ----------
+    banana: '<g' + M + '><path d="M57 26C45 42 30 58 20 86c12-2 26-20 36-42Z" fill="#ffd23f"/><path d="M63 26c12 16 28 32 37 60-12-2-26-20-36-42Z" fill="#f4c230"/><path d="M53 24h14c4 26 6 52 2 78H51c-4-26-2-52 2-78Z" fill="#ffe27a"/><rect x="55" y="8" width="10" height="20" rx="4" fill="#8b6b2e"/></g>' +
+      '<g fill="#7a5320"><circle cx="22" cy="84" r="3"/><circle cx="98" cy="84" r="3"/><rect x="52" y="98" width="16" height="5" rx="2.5"/></g><path d="M60 34v58" stroke="#fff3b0" stroke-width="3" stroke-linecap="round" opacity=".8"/>',
+    ovo: '<g transform="rotate(-18 52 42)"><g' + M + '><path d="M28 50a26 24 0 0 1 52 0l-6.5 6-6.5-6-6.5 6-6.5-6-6.5 6-6.5-6-6.5 6Z" fill="#fbf1e2"/></g></g>' +
+      '<g' + M + '><path d="M18 66l8 7 8-7 8 7 8-7 8 7 8-7 8 7 8-7 8 7 8-7a42 38 0 0 1-84 0Z" fill="#f4e4cc"/></g><ellipse cx="60" cy="74" rx="34" ry="6" fill="#e2cba8" opacity=".7"/>',
+    maca: '<g' + M + '><path d="M38 38c10 3 34 3 44 0-7 10-9 18-5 30 4 12 2 22-2 30-10 3-30 3-40 0-4-8-6-18-2-30 4-12 2-20-5-30Z" fill="#fbe9c4"/>' +
+      '<path d="M32 36c0-11 13-18 28-18s28 7 28 18c-9 5-47 5-56 0Z" fill="#e0453a"/><path d="M32 98c9-5 47-5 56 0 0 10-13 15-28 15s-28-5-28-15Z" fill="#e0453a"/></g>' +
+      '<rect x="57" y="5" width="6" height="16" rx="3" fill="#8b6b2e"/><path d="M63 12c6-8 16-8 20-3-6 6-14 6-20 3Z" fill="#58b043"/><g fill="#5e3a18"><ellipse cx="56" cy="64" rx="2.6" ry="4.5" transform="rotate(-15 56 64)"/><ellipse cx="64" cy="66" rx="2.6" ry="4.5" transform="rotate(15 64 66)"/></g>' +
+      '<path d="M40 26c4-4 10-6 16-6" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none" opacity=".6"/>',
+    melancia: '<g transform="translate(0 4)"><g' + M + '><path d="M10 52a50 50 0 0 0 100 0Z" fill="#3f9a37"/></g><path d="M18 52a42 42 0 0 0 84 0Z" fill="#eaf6d2"/>' +
+      '<path d="M26 52a34 30 0 0 0 68 0c-5 6-9 5-13 0s-9 6-14 0-9 6-14 0-8 5-14 0Z" fill="#ff6b6b"/><g fill="#2b2b2b"><ellipse cx="46" cy="66" rx="2" ry="3.2"/><ellipse cx="62" cy="72" rx="2" ry="3.2"/><ellipse cx="76" cy="64" rx="2" ry="3.2"/></g>' +
+      '<g stroke="#2c7a2a" stroke-width="3" stroke-linecap="round"><path d="M18 74l6-4M34 92l4-6M60 100v-7M86 92l-4-6M102 74l-6-4"/></g></g>'
+  };
+  function desenhoItem(nome) {
+    return '<svg viewBox="0 0 120 120" aria-hidden="true"><ellipse cx="60" cy="114" rx="34" ry="5" fill="#0b2200" opacity=".16"/>' + DESENHOS[nome] + "</svg>";
+  }
+
+  // CATÁLOGO DE OBJETOS. Para colocar um objeto novo, copie uma linha e troque:
+  //   id      = nome curto, sem espaço e sem acento
+  //   desenho = o nome de um desenho da lista DESENHOS (acima)
+  //   nome    = o nome que aparece embaixo do objeto (e que o leitor de tela lê)
+  //   lixeira = "Papel", "Plástico", "Vidro", "Metal" ou "Orgânico" (igual ao data-lixeira das lixeiras no HTML)
   const itens = [
-    { imagem: "imagens/lixeira/garrafa-pet.jpg", alt: "Garrafa de água", lixeira: "Plástico" },
-    { imagem: "imagens/lixeira/jornal.jpg", alt: "Jornal", lixeira: "Papel" },
-    { imagem: "imagens/lixeira/lata.jpg", alt: "Lata de refrigerante", lixeira: "Metal" },
-    { imagem: "imagens/lixeira/parafusos.jpg", alt: "Pregos e parafusos", lixeira: "Metal" },
-    { imagem: "imagens/lixeira/banana.jpg", alt: "Casca de banana", lixeira: "Orgânico" },
-    { imagem: "imagens/lixeira/casca-ovo.jpg", alt: "Cascas de ovo", lixeira: "Orgânico" },
-    { imagem: "imagens/lixeira/pote-vidro.jpg", alt: "Pote de vidro", lixeira: "Vidro" }
+    { id: "garrafa-pet", desenho: "garrafaPet", nome: "Garrafa PET", lixeira: "Plástico" },
+    { id: "sacola", desenho: "sacola", nome: "Sacolinha plástica", lixeira: "Plástico" },
+    { id: "pote-iogurte", desenho: "poteIogurte", nome: "Pote de iogurte", lixeira: "Plástico" },
+    { id: "xampu", desenho: "xampu", nome: "Frasco de xampu", lixeira: "Plástico" },
+    { id: "jornal", desenho: "jornal", nome: "Jornal", lixeira: "Papel" },
+    { id: "caixa-papelao", desenho: "caixaPapelao", nome: "Caixa de papelão", lixeira: "Papel" },
+    { id: "papel-amassado", desenho: "papelAmassado", nome: "Folha de caderno amassada", lixeira: "Papel" },
+    { id: "rolo-papelao", desenho: "roloPapelao", nome: "Rolo de papelão", lixeira: "Papel" },
+    { id: "garrafa-vidro", desenho: "garrafaVidro", nome: "Garrafa de vidro", lixeira: "Vidro" },
+    { id: "pote-vidro", desenho: "poteVidro", nome: "Pote de vidro", lixeira: "Vidro" },
+    { id: "copo-vidro", desenho: "copoVidro", nome: "Copo de vidro", lixeira: "Vidro" },
+    { id: "lata-refri", desenho: "lata", nome: "Lata de refrigerante", lixeira: "Metal" },
+    { id: "lata-milho", desenho: "lataMilho", nome: "Lata de milho", lixeira: "Metal" },
+    { id: "tampinha", desenho: "tampinha", nome: "Tampinha de garrafa", lixeira: "Metal" },
+    { id: "prego-parafuso", desenho: "parafusos", nome: "Prego e parafuso", lixeira: "Metal" },
+    { id: "banana", desenho: "banana", nome: "Casca de banana", lixeira: "Orgânico" },
+    { id: "ovo", desenho: "ovo", nome: "Cascas de ovo", lixeira: "Orgânico" },
+    { id: "maca", desenho: "maca", nome: "Restos de maçã", lixeira: "Orgânico" },
+    { id: "melancia", desenho: "melancia", nome: "Casca de melancia", lixeira: "Orgânico" }
   ];
-  const sorteados = embaralhar(itens);
-  let rodada = 0, acertos = 0, travado = false;
+
+  // SORTEIO DE CADA PARTIDA: ITENS_POR_PARTIDA objetos, com pelo menos 1 de cada lixeira e no máximo 2 iguais.
+  // Os objetos da partida anterior ficam por último na fila, para a criança ver coisas diferentes.
+  const ITENS_POR_PARTIDA = 8;
+  const CHAVE_RECENTES = "ecokids-lixeira-recentes";
+  function sortearItens() {
+    let recentes = [];
+    try { recentes = JSON.parse(localStorage.getItem(CHAVE_RECENTES)) || []; } catch (e) {}
+    const grupos = {};
+    embaralhar(itens).forEach(function (it) { (grupos[it.lixeira] = grupos[it.lixeira] || []).push(it); });
+    Object.keys(grupos).forEach(function (g) {   // os que a criança acabou de ver vão para o fim da fila
+      grupos[g].sort(function (a, b) { return (recentes.indexOf(a.id) !== -1) - (recentes.indexOf(b.id) !== -1); });
+    });
+    const escolhidos = [];
+    Object.keys(grupos).forEach(function (g) { escolhidos.push(grupos[g].shift()); });          // 1 de cada lixeira
+    const extras = embaralhar(Object.keys(grupos).filter(function (g) { return grupos[g].length; }));
+    for (let i = 0; escolhidos.length < ITENS_POR_PARTIDA && i < extras.length; i++) escolhidos.push(grupos[extras[i]].shift());   // completa sem repetir lixeira
+    // mistura evitando duas lixeiras iguais seguidas
+    let ordem = embaralhar(escolhidos);
+    for (let t = 0; t < 30 && ordem.some(function (it, i) { return i && it.lixeira === ordem[i - 1].lixeira; }); t++) ordem = embaralhar(escolhidos);
+    try { localStorage.setItem(CHAVE_RECENTES, JSON.stringify(ordem.map(function (it) { return it.id; }))); } catch (e) {}
+    return ordem;
+  }
+  const sorteados = sortearItens();
+  // Pontuação (igual a antes): conta acerto quando a criança acerta a lixeira na PRIMEIRA tentativa.
+  // Se errar, ela pode tentar de novo até acertar, mas aquele item não conta como acerto.
+  let rodada = 0, acertos = 0, travado = false, primeiraTentativa = true;
   const elItem = document.getElementById("item-imagem");
   const elDica = document.getElementById("item-dica");
+  const elNome = document.getElementById("item-nome");
   const elPlacar = document.getElementById("placar");
   const elTitoLixeira = document.querySelector(".trash-prompt-row .mascot");
+  const lixeiras = areaLixeiras.querySelectorAll(".big-bin-option");
 
   function mostrarItem() {
     trocarRosto(elTitoLixeira, "curioso");
-    elItem.src = sorteados[rodada].imagem;
-    elItem.alt = sorteados[rodada].alt;
+    const item = sorteados[rodada];
+    elItem.innerHTML = desenhoItem(item.desenho);
+    elItem.setAttribute("aria-label", item.nome);
+    if (elNome) elNome.textContent = item.nome;
+    elItem.className = "item-imagem item-arrastavel";
+    elItem.style.transform = "";
+    desloc = { x: 0, y: 0 };
     elDica.className = "";
     elDica.textContent = "";
+    lixeiras.forEach(function (b) { b.classList.remove("tentou", "certa", "errada", "alvo"); });
+    primeiraTentativa = true;
     travado = false;
   }
 
-  areaLixeiras.querySelectorAll("button").forEach(function (botao) {
-    botao.addEventListener("click", function () {
-      if (travado) return;
+  // A criança escolheu uma lixeira (soltando o item nela ou tocando/clicando na lixeira)
+  function responder(botao, soltouNaLixeira) {
+    if (travado || botao.classList.contains("tentou")) return;
+    const certa = sorteados[rodada].lixeira;
+    if (botao.dataset.lixeira === certa) {
       travado = true;
-      const certa = sorteados[rodada].lixeira;
-      const escolhida = botao.dataset.lixeira;
-      if (escolhida === certa) {
-        acertos++;
-        elPlacar.textContent = "Acertos: " + acertos;
-        elDica.className = "certo"; elDica.textContent = "Certo!"; trocarRosto(elTitoLixeira, "animado");
-      } else {
-        elDica.className = "errado"; elDica.textContent = "Era a lixeira de " + certa.toLowerCase() + "."; trocarRosto(elTitoLixeira, "triste");
-      }
+      if (primeiraTentativa) { acertos++; elPlacar.textContent = "Acertos: " + acertos; }
+      elDica.className = "certo"; elDica.textContent = "Isso! É a lixeira de " + certa.toLowerCase() + "!";
+      trocarRosto(elTitoLixeira, "animado");
+      botao.classList.add("certa");
+      // o item "voa" para dentro da lixeira (sai de onde está agora e encolhe na boca da lixeira)
+      const ri = elItem.getBoundingClientRect(), rb = botao.getBoundingClientRect();
+      const base = soltouNaLixeira ? desloc : { x: 0, y: 0 };
+      const destinoX = base.x + (rb.left + rb.width / 2) - (ri.left + ri.width / 2);
+      const destinoY = base.y + (rb.top + rb.height * .3) - (ri.top + ri.height / 2);
+      elItem.classList.remove("arrastando");
+      elItem.classList.add("entrando");
+      requestAnimationFrame(function () { elItem.style.transform = "translate(" + destinoX + "px, " + destinoY + "px) scale(.2)"; });
       setTimeout(function () {
         rodada++;
         if (rodada === sorteados.length) { terminarJogo("lixeira.html", estrelasPor(acertos / sorteados.length), acertos, sorteados.length); } else { mostrarItem(); }
-      }, 1200);
-    });
+      }, 1100);
+    } else {
+      primeiraTentativa = false;
+      elDica.className = "errado";
+      elDica.textContent = "Ops! Não é a de " + botao.dataset.lixeira.toLowerCase() + ". Tente outra!";
+      void elDica.offsetWidth;   // reinicia a animação de "tremer" se a criança errar de novo
+      trocarRosto(elTitoLixeira, "triste");
+      botao.classList.add("errada", "tentou");
+      setTimeout(function () { botao.classList.remove("errada"); }, 450);
+      voltarItem();
+    }
+  }
+
+  // Jeito 1: tocar/clicar na lixeira (também funciona com o teclado)
+  lixeiras.forEach(function (botao) {
+    botao.addEventListener("click", function () { responder(botao, false); });
   });
+
+  // Jeito 2: arrastar o item com o mouse ou com o dedo e soltar dentro da lixeira
+  let arraste = null;
+  let desloc = { x: 0, y: 0 };   // quanto o item já foi arrastado
+  function voltarItem() {
+    desloc = { x: 0, y: 0 };
+    elItem.classList.remove("arrastando");
+    elItem.classList.add("voltando");
+    elItem.style.transform = "";
+    setTimeout(function () { elItem.classList.remove("voltando"); }, 300);
+  }
+  function lixeiraEm(x, y) {
+    const sob = document.elementFromPoint(x, y);
+    return sob && sob.closest ? sob.closest(".big-bin-option") : null;
+  }
+  elItem.addEventListener("pointerdown", function (e) {
+    if (travado || e.button > 0) return;
+    e.preventDefault();
+    arraste = { id: e.pointerId, x0: e.clientX, y0: e.clientY, alvo: null };
+    try { elItem.setPointerCapture(e.pointerId); } catch (erro) {}   // o item continua "preso" ao dedo/mouse
+    elItem.classList.remove("voltando");
+    elItem.classList.add("arrastando");
+    trocarRosto(elTitoLixeira, "curioso");
+  });
+  window.addEventListener("pointermove", function (e) {
+    if (!arraste || e.pointerId !== arraste.id) return;
+    e.preventDefault();
+    desloc = { x: e.clientX - arraste.x0, y: e.clientY - arraste.y0 };
+    elItem.style.transform = "translate(" + desloc.x + "px, " + desloc.y + "px) scale(1.08) rotate(-4deg)";
+    let alvo = lixeiraEm(e.clientX, e.clientY);
+    if (alvo && alvo.classList.contains("tentou")) alvo = null;
+    if (alvo !== arraste.alvo) {
+      if (arraste.alvo) arraste.alvo.classList.remove("alvo");
+      if (alvo) alvo.classList.add("alvo");
+      arraste.alvo = alvo;
+    }
+  }, { passive: false });
+  function soltarItem(e, cancelou) {
+    if (!arraste || e.pointerId !== arraste.id) return;
+    const alvo = cancelou ? null : (arraste.alvo || lixeiraEm(e.clientX, e.clientY));
+    if (arraste.alvo) arraste.alvo.classList.remove("alvo");
+    arraste = null;
+    if (alvo && !alvo.classList.contains("tentou")) responder(alvo, true);
+    else voltarItem();
+  }
+  window.addEventListener("pointerup", function (e) { soltarItem(e, false); });
+  window.addEventListener("pointercancel", function (e) { soltarItem(e, true); });
   mostrarItem();
 }
 
 /* ---------- 6) QUEBRA-CABEÇA ---------- */
 const tabuleiro = document.getElementById("tabuleiro");
 if (tabuleiro) {
-  // As figuras do jogo. "colunas" x "linhas" = quantidade de peças.
-  // Ordem de entrada: as figuras normais (3x3) alternam; depois que a criança monta todas,
-  // vem a figura "grande" (mais peças). Quando termina a grande, o ciclo recomeça.
+  // FIGURAS DO QUEBRA-CABEÇA: a criança escolhe qual quer montar na tela de seleção.
+  // Para colocar uma figura nova: salve a imagem na pasta imagens/ e copie uma linha abaixo, trocando:
+  //   id      = nome curto, sem espaço e sem acento (serve para lembrar quais a criança já montou)
+  //   nome    = o nome que aparece no cartão
+  //   arquivo = o caminho da imagem. Pode ser de qualquer tamanho: se não for quadrada,
+  //             o jogo usa só o meio dela (sem esticar). O ideal é uma imagem quadrada de 900 x 900.
+  //   miniatura = (opcional) uma versão pequena (320 x 320, WebP) só para o cartão da tela de seleção,
+  //             para a tela abrir rápido. Sem ela, o cartão usa a imagem grande.
   const figuras = [
-    { id: "planeta", arquivo: "imagens/quebra-cabeca-1-quadrado.png", colunas: 3, linhas: 3, grande: false },
-    { id: "natureza", arquivo: "imagens/quebra-cabeca-2-quadrado.jpg", colunas: 3, linhas: 3, grande: false },
-    { id: "paisagem", arquivo: "imagens/quebra-cabeca-3-grande.jpg", colunas: 6, linhas: 3, grande: true }
+    { id: "planeta", nome: "Planeta feliz", arquivo: "imagens/quebra-cabeca-1-quadrado.webp", miniatura: "imagens/quebra-cabeca-1-mini.webp" },
+    { id: "cuidar", nome: "Vamos cuidar do planeta", arquivo: "imagens/quebra-cabeca-2-quadrado.webp", miniatura: "imagens/quebra-cabeca-2-mini.webp" },
+    { id: "paisagem", nome: "Natureza em harmonia", arquivo: "imagens/quebra-cabeca-3-grande.webp", miniatura: "imagens/quebra-cabeca-3-mini.webp" }
   ];
+  const COLUNAS = 3, LINHAS = 3;   // todas as figuras têm o mesmo tamanho: 3 x 3 = 9 peças
+  const total = COLUNAS * LINHAS;
 
-  // O navegador lembra quais figuras já foram montadas neste ciclo (localStorage).
-  const CHAVE = "ecokids-quebra-cabeca";
-  function lerFeitas() {
+  // O navegador lembra quais figuras a criança já montou, só para mostrar o selo "Já montou!"
+  // (ela pode montar a mesma figura quantas vezes quiser).
+  const CHAVE = "ecokids-quebra-montadas";
+  function lerMontadas() {
     try { return JSON.parse(localStorage.getItem(CHAVE)) || []; } catch (e) { return []; }
   }
-  function salvarFeitas(lista) {
+  function marcarMontada(id) {
+    const lista = lerMontadas();
+    if (lista.indexOf(id) === -1) lista.push(id);
     try { localStorage.setItem(CHAVE, JSON.stringify(lista)); } catch (e) {}
   }
-  function escolherFigura() {
-    const feitas = lerFeitas();
-    const normais = figuras.filter(function (f) { return !f.grande; });
-    const faltam = normais.filter(function (f) { return feitas.indexOf(f.id) === -1; });
-    if (faltam.length > 0) return faltam[Math.floor(Math.random() * faltam.length)];
-    return figuras.filter(function (f) { return f.grande; })[0];
-  }
-  function registrarConclusao(figura) {
-    if (figura.grande) { salvarFeitas([]); return; }           // terminou a grande: recomeça o ciclo
-    const feitas = lerFeitas();
-    if (feitas.indexOf(figura.id) === -1) feitas.push(figura.id);
-    salvarFeitas(feitas);
-  }
 
-  const figura = escolherFigura();
-  const total = figura.colunas * figura.linhas;
   const placarPecas = document.getElementById("placar");
-  document.getElementById("modelo").src = figura.arquivo;
-  if (figura.grande) {
-    tabuleiro.classList.add("grande");
-    document.getElementById("layout-quebra").classList.add("grande");
-    tabuleiro.style.gridTemplateColumns = "repeat(" + figura.colunas + ", var(--pw))";
-    tabuleiro.style.gridTemplateRows = "repeat(" + figura.linhas + ", var(--ph))";
-  }
+  const telaEscolha = document.getElementById("escolha-figura");
+  const listaFiguras = document.getElementById("lista-figuras");
+  const layoutJogo = document.getElementById("layout-quebra");
+  const modelo = document.getElementById("modelo");
 
-  // "ordem[i]" diz qual pedaço da imagem está na posição i. Certo = [0,1,2,...]
-  const certo = [];
-  for (let i = 0; i < total; i++) certo.push(i);
-  let ordem = embaralhar(certo);
-  while (ordem.every(function (n, i) { return n === i; })) ordem = embaralhar(ordem); // nunca começa pronto
+  // Estado da partida (começa de novo a cada figura escolhida)
+  let figura = null;
+  let recorte = null;      // onde fica o quadrado do meio da imagem (para imagens que não são quadradas)
+  let ordem = [];          // "ordem[i]" diz qual pedaço da imagem está na posição i. Certo = [0,1,2,...]
   let selecionada = null;
   let trocas = 0;          // quantas trocas a criança fez (usado nas estrelas)
+  let terminou = false;
+
+  // Tela de seleção: um cartão para cada figura
+  function mostrarEscolha() {
+    const montadas = lerMontadas();
+    listaFiguras.innerHTML = "";
+    figuras.forEach(function (f) {
+      const cartao = document.createElement("button");
+      cartao.type = "button";
+      cartao.className = "figure-card";
+      cartao.innerHTML = '<span class="figure-thumb"><img src="' + (f.miniatura || f.arquivo) + '" alt="" width="320" height="320" loading="lazy"></span>' +
+        "<strong></strong><small>" + total + " peças</small>" +
+        (montadas.indexOf(f.id) !== -1 ? '<span class="figure-done">Já montou!</span>' : "");
+      cartao.querySelector("strong").textContent = f.nome;
+      cartao.setAttribute("aria-label", "Montar " + f.nome + (montadas.indexOf(f.id) !== -1 ? " (você já montou esta)" : ""));
+      cartao.addEventListener("click", function () { comecar(f); });
+      listaFiguras.appendChild(cartao);
+    });
+    layoutJogo.hidden = true;
+    telaEscolha.hidden = false;
+    placarPecas.textContent = "Escolha uma figura";
+  }
+
+  // Começa a montar a figura escolhida
+  function comecar(f) {
+    figura = f;
+    const img = new Image();
+    img.onload = function () { recorte = { w: img.naturalWidth, h: img.naturalHeight }; iniciarPartida(); };
+    img.onerror = function () { recorte = { w: 1, h: 1 }; iniciarPartida(); };   // sem as medidas: trata como quadrada
+    img.src = f.arquivo;
+  }
+  function iniciarPartida() {
+    modelo.src = figura.arquivo;
+    modelo.alt = "Modelo da figura: " + figura.nome;
+    const certo = [];
+    for (let i = 0; i < total; i++) certo.push(i);
+    ordem = embaralhar(certo);
+    while (ordem.every(function (n, i) { return n === i; })) ordem = embaralhar(ordem); // nunca começa pronto
+    selecionada = null; trocas = 0; terminou = false;
+    telaEscolha.hidden = true;
+    layoutJogo.hidden = false;
+    desenhar();
+    if (tabuleiro.children[0]) tabuleiro.children[0].focus({ preventScroll: true });
+  }
+  document.getElementById("trocar-figura").addEventListener("click", function () { if (!terminou) mostrarEscolha(); });
+
+  // Qual parte da imagem cada peça mostra. Usa só o quadrado do meio da imagem
+  // (numa imagem quadrada, é a imagem toda), dividido em COLUNAS x LINHAS.
+  function fundoDaPeca(pedaco) {
+    const lado = Math.min(recorte.w, recorte.h);
+    const larg = recorte.w / lado * COLUNAS, alt = recorte.h / lado * LINHAS;    // tamanho da imagem, medido em "peças"
+    const sobraX = (recorte.w - lado) / 2 / lado * COLUNAS, sobraY = (recorte.h - lado) / 2 / lado * LINHAS;
+    const col = pedaco % COLUNAS, lin = Math.floor(pedaco / COLUNAS);
+    return {
+      tamanho: (larg * 100) + "% " + (alt * 100) + "%",
+      posicao: ((sobraX + col) / (larg - 1) * 100) + "% " + ((sobraY + lin) / (alt - 1) * 100) + "%"
+    };
+  }
 
   function desenhar() {
     tabuleiro.innerHTML = "";
@@ -612,10 +867,10 @@ if (tabuleiro) {
       botao.className = "puzzle-piece" + (selecionada === posicao ? " selected" : "");
       botao.setAttribute("aria-label", "Peça " + (posicao + 1));
       // mostra só o pedaço certo da imagem (coluna e linha dentro da grade)
-      const col = pedaco % figura.colunas, lin = Math.floor(pedaco / figura.colunas);
+      const fundo = fundoDaPeca(pedaco);
       botao.style.backgroundImage = 'url("' + figura.arquivo + '")';
-      botao.style.backgroundSize = (figura.colunas * 100) + "% " + (figura.linhas * 100) + "%";
-      botao.style.backgroundPosition = (col / (figura.colunas - 1) * 100) + "% " + (lin / (figura.linhas - 1) * 100) + "%";
+      botao.style.backgroundSize = fundo.tamanho;
+      botao.style.backgroundPosition = fundo.posicao;
       botao.addEventListener("click", function () { clicar(posicao); });
       tabuleiro.appendChild(botao);
     });
@@ -623,29 +878,88 @@ if (tabuleiro) {
     return certas;
   }
 
-  function clicar(posicao) {
-    if (selecionada === null) {
-      selecionada = posicao; desenhar();
-      if (tabuleiro.children[posicao]) tabuleiro.children[posicao].focus({ preventScroll: true });
-      return;
-    }
-    // segunda peça escolhida: troca as duas de lugar
-    const temp = ordem[selecionada];
-    ordem[selecionada] = ordem[posicao];
-    ordem[posicao] = temp;
+  let ignorarClique = false;   // o "clique" que o navegador manda logo depois de um arraste não conta
+
+  // Troca duas peças de lugar (vale para o clique e para o arraste: cada troca conta 1 nas estrelas)
+  function trocar(de, para) {
+    const temp = ordem[de];
+    ordem[de] = ordem[para];
+    ordem[para] = temp;
     selecionada = null;
     trocas++;
     const certasAgora = desenhar();
     // as peças são redesenhadas: devolve o foco do teclado para a peça que foi tocada
-    if (tabuleiro.children[posicao]) tabuleiro.children[posicao].focus({ preventScroll: true });
+    const peca = tabuleiro.children[para];
+    if (peca) { peca.focus({ preventScroll: true }); peca.classList.add("encaixou"); }
     if (certasAgora === total) {
-      registrarConclusao(figura);
+      terminou = true;
+      marcarMontada(figura.id);
       // quanto menos trocas, mais estrelas (com folga: 1,3 troca por peça já dá 5 estrelas)
       const estrelas = estrelasPor(total * 1.3 / trocas, 1);
       setTimeout(function () { terminarJogo("quebra-cabeca.html", estrelas, total, trocas); }, 900);
     }
   }
-  desenhar();
+
+  // Jeito 1 (clique, toque ou teclado): escolhe uma peça e depois a outra
+  function clicar(posicao) {
+    if (terminou || ignorarClique) return;
+    if (selecionada === null || selecionada === posicao) {
+      selecionada = selecionada === posicao ? null : posicao;   // tocar de novo na mesma peça cancela
+      desenhar();
+      if (tabuleiro.children[posicao]) tabuleiro.children[posicao].focus({ preventScroll: true });
+      return;
+    }
+    trocar(selecionada, posicao);   // segunda peça escolhida: troca as duas de lugar
+  }
+
+  // Jeito 2 (arrastar e soltar, com mouse ou dedo): uma cópia da peça segue o ponteiro;
+  // a peça que está embaixo fica destacada e, ao soltar, as duas trocam de lugar.
+  let arraste = null;
+  function posicaoDe(peca) { return Array.prototype.indexOf.call(tabuleiro.children, peca); }
+  function limparAlvo() { if (arraste && arraste.alvo) arraste.alvo.classList.remove("alvo"); }
+
+  tabuleiro.addEventListener("pointerdown", function (e) {
+    const peca = e.target.closest(".puzzle-piece");
+    if (!peca || terminou || e.button > 0) return;
+    arraste = { id: e.pointerId, peca: peca, de: posicaoDe(peca), x0: e.clientX, y0: e.clientY, fantasma: null, alvo: null };
+  });
+  window.addEventListener("pointermove", function (e) {
+    if (!arraste || e.pointerId !== arraste.id) return;
+    const dx = e.clientX - arraste.x0, dy = e.clientY - arraste.y0;
+    if (!arraste.fantasma) {
+      if (Math.hypot(dx, dy) < 8) return;   // mexeu pouquinho: ainda é um toque
+      const r = arraste.peca.getBoundingClientRect();
+      const f = arraste.peca.cloneNode(false);
+      f.className = "puzzle-piece fantasma";
+      f.removeAttribute("aria-label"); f.setAttribute("aria-hidden", "true"); f.tabIndex = -1;
+      f.style.left = r.left + "px"; f.style.top = r.top + "px";
+      f.style.width = r.width + "px"; f.style.height = r.height + "px";
+      document.body.appendChild(f);
+      arraste.fantasma = f;
+      arraste.peca.classList.add("origem");
+      if (selecionada !== null) { selecionada = null; tabuleiro.querySelectorAll(".selected").forEach(function (p) { p.classList.remove("selected"); }); }
+    }
+    e.preventDefault();
+    arraste.fantasma.style.transform = "translate(" + dx + "px, " + dy + "px) scale(1.08) rotate(3deg)";
+    const sob = document.elementFromPoint(e.clientX, e.clientY);
+    let alvo = sob && sob.closest ? sob.closest(".puzzle-piece") : null;
+    if (alvo && (alvo.parentNode !== tabuleiro || alvo === arraste.peca)) alvo = null;
+    if (alvo !== arraste.alvo) { limparAlvo(); if (alvo) alvo.classList.add("alvo"); arraste.alvo = alvo; }
+  }, { passive: false });
+  function soltar(e, cancelou) {
+    if (!arraste || e.pointerId !== arraste.id) return;
+    const a = arraste; limparAlvo(); arraste = null;
+    if (!a.fantasma) return;                       // não arrastou: o clique normal cuida
+    ignorarClique = true; setTimeout(function () { ignorarClique = false; }, 80);
+    if (!cancelou && a.alvo) { a.fantasma.remove(); trocar(a.de, posicaoDe(a.alvo)); return; }
+    // soltou fora do tabuleiro: a peça volta suavemente para o lugar
+    a.fantasma.classList.add("voltando");
+    a.fantasma.style.transform = "translate(0, 0)";
+    setTimeout(function () { a.fantasma.remove(); a.peca.classList.remove("origem"); }, 260);
+  }
+  window.addEventListener("pointerup", function (e) { soltar(e, false); });
+  window.addEventListener("pointercancel", function (e) { soltar(e, true); });
+  mostrarEscolha();   // ao entrar no jogo, a criança primeiro escolhe a figura
 }
 
 /* ---------- 8) CAÇA-PALAVRAS ---------- */
@@ -661,27 +975,34 @@ if (gradeLetras) {
   const TAM = 10;            // grade de 10 x 10
   const QUANTAS_PALAVRAS = 6;
 
-  // Tenta colocar todas as palavras (para a direita ou para baixo). Se não couber, tenta de novo.
+  // Direções das palavras: sempre no sentido de leitura, para ficar fácil para as crianças.
+  //   h = para a direita →   v = para baixo ↓   d = na diagonal, descendo para a direita ↘
+  const DIRECOES = { h: [0, 1], v: [1, 0], d: [1, 1] };
+  const QUANTAS_DIAGONAIS = 2;   // em cada partida, 2 das 6 palavras ficam na diagonal
+
+  // Tenta colocar todas as palavras. Se não couber, sorteia de novo.
   function montarGrade() {
-    for (let tentativa = 0; tentativa < 100; tentativa++) {
+    for (let tentativa = 0; tentativa < 200; tentativa++) {
       const escolhidas = embaralhar(BANCO).slice(0, QUANTAS_PALAVRAS).sort(function (x, y) { return y.length - x.length; });
+      const diagonais = embaralhar(escolhidas.map(function (p, i) { return i; })).slice(0, QUANTAS_DIAGONAIS);
       const grade = [];
       for (let l = 0; l < TAM; l++) grade.push(new Array(TAM).fill(""));
       let deuCerto = true;
-      escolhidas.forEach(function (palavra) {
+      escolhidas.forEach(function (palavra, idx) {
         if (!deuCerto) return;
         let colocou = false;
         for (let k = 0; k < 300 && !colocou; k++) {
-          const horizontal = Math.random() < 0.5;
-          const l = Math.floor(Math.random() * (horizontal ? TAM : TAM - palavra.length + 1));
-          const c = Math.floor(Math.random() * (horizontal ? TAM - palavra.length + 1 : TAM));
+          const dir = diagonais.indexOf(idx) !== -1 ? "d" : (Math.random() < 0.5 ? "h" : "v");
+          const dl = DIRECOES[dir][0], dc = DIRECOES[dir][1];
+          const l = Math.floor(Math.random() * (TAM - dl * (palavra.length - 1)));
+          const c = Math.floor(Math.random() * (TAM - dc * (palavra.length - 1)));
           let cabe = true;
           for (let i = 0; i < palavra.length; i++) {
-            const atual = grade[horizontal ? l : l + i][horizontal ? c + i : c];
+            const atual = grade[l + dl * i][c + dc * i];
             if (atual !== "" && atual !== palavra[i]) { cabe = false; break; }
           }
           if (!cabe) continue;
-          for (let i = 0; i < palavra.length; i++) grade[horizontal ? l : l + i][horizontal ? c + i : c] = palavra[i];
+          for (let i = 0; i < palavra.length; i++) grade[l + dl * i][c + dc * i] = palavra[i];
           colocou = true;
         }
         if (!colocou) deuCerto = false;
@@ -708,21 +1029,29 @@ if (gradeLetras) {
   });
 
   const botoesLetras = [];
-  let inicio = null, achadas = 0, erros = 0;
+  let inicio = null, achadas = 0, erros = 0, terminou = false;
 
   function limparSelecao() { gradeLetras.querySelectorAll(".sel").forEach(function (b) { b.classList.remove("sel"); }); inicio = null; }
 
+  // Jeito 1 (toque, clique ou teclado): toca na primeira letra e depois na última
   function clicarLetra(l, c) {
+    if (terminou) return;
     if (inicio === null) { inicio = { l: l, c: c }; botoesLetras[l][c].classList.add("sel"); return; }
     if (inicio.l === l && inicio.c === c) { limparSelecao(); return; }     // clicou de novo: cancela
-    if (inicio.l !== l && inicio.c !== c) {                                   // fora de linha/coluna: vira o novo começo
+    const emLinha = inicio.l === l || inicio.c === c || Math.abs(l - inicio.l) === Math.abs(c - inicio.c);
+    if (!emLinha) {                                                           // fora de linha/coluna/diagonal: vira o novo começo
       limparSelecao(); inicio = { l: l, c: c }; botoesLetras[l][c].classList.add("sel"); return;
     }
-    // monta as letras do começo até o fim (em linha reta)
+    // monta as letras do começo até o fim (em linha reta: horizontal, vertical ou diagonal)
     const passoL = Math.sign(l - inicio.l), passoC = Math.sign(c - inicio.c);
     const celulas = [];
     let x = inicio.l, y = inicio.c;
     while (true) { celulas.push([x, y]); if (x === l && y === c) break; x += passoL; y += passoC; }
+    avaliar(celulas);
+  }
+
+  // Confere se as letras escolhidas formam uma das palavras (de frente para trás ou de trás para frente)
+  function avaliar(celulas) {
     const texto = celulas.map(function (p) { return jogoCaca.grade[p[0]][p[1]]; }).join("");
     const inverso = texto.split("").reverse().join("");
     const achou = jogoCaca.palavras.filter(function (p) { return !itensLista[p].classList.contains("done") && (p === texto || p === inverso); })[0];
@@ -733,6 +1062,7 @@ if (gradeLetras) {
       placarCaca.textContent = "Achadas: " + achadas + " de " + jogoCaca.palavras.length;
       limparSelecao();
       if (achadas === jogoCaca.palavras.length) {
+        terminou = true;
         const est = estrelasPor(jogoCaca.palavras.length / (jogoCaca.palavras.length + erros), 1);
         setTimeout(function () { terminarJogo("caca-palavras.html", est, jogoCaca.palavras.length, erros); }, 900);
       }
@@ -751,11 +1081,60 @@ if (gradeLetras) {
       botao.type = "button";
       botao.className = "letter";
       botao.textContent = jogoCaca.grade[l][c];
-      botao.addEventListener("click", function () { clicarLetra(l, c); });
+      botao.dataset.l = l; botao.dataset.c = c;
+      botao.addEventListener("click", function () { if (!ignorarClique) clicarLetra(l, c); });
       gradeLetras.appendChild(botao);
       botoesLetras[l].push(botao);
     }
   }
+
+  // Jeito 2 (arrastar com o mouse ou o dedo): da primeira até a última letra.
+  // O caminho "gruda" na linha reta mais próxima (horizontal, vertical ou diagonal), e as letras ficam destacadas.
+  let arrasto = null;
+  let ignorarClique = false;   // o "clique" que o navegador manda logo depois de um arraste não conta
+  function letraEm(x, y) {
+    const el = document.elementFromPoint(x, y);
+    const b = el && el.closest ? el.closest(".letter") : null;
+    return b && b.parentNode === gradeLetras ? { l: +b.dataset.l, c: +b.dataset.c } : null;
+  }
+  function caminho(a, b) {
+    const dl = b.l - a.l, dc = b.c - a.c;
+    const oitavo = Math.round(Math.atan2(dl, dc) / (Math.PI / 4));   // uma das 8 direções
+    const sl = Math.round(Math.sin(oitavo * Math.PI / 4)), sc = Math.round(Math.cos(oitavo * Math.PI / 4));
+    let n = Math.max(Math.abs(dl), Math.abs(dc));
+    while (n > 0 && (a.l + sl * n < 0 || a.l + sl * n >= TAM || a.c + sc * n < 0 || a.c + sc * n >= TAM)) n--;   // não sai da grade
+    const celulas = [];
+    for (let i = 0; i <= n; i++) celulas.push([a.l + sl * i, a.c + sc * i]);
+    return celulas;
+  }
+  gradeLetras.addEventListener("pointerdown", function (e) {
+    if (terminou || e.button > 0) return;
+    const cel = letraEm(e.clientX, e.clientY);
+    if (cel) arrasto = { id: e.pointerId, inicio: cel, moveu: false, celulas: [] };
+  });
+  window.addEventListener("pointermove", function (e) {
+    if (!arrasto || e.pointerId !== arrasto.id) return;
+    const cel = letraEm(e.clientX, e.clientY);
+    if (!cel) return;
+    if (!arrasto.moveu) {
+      if (cel.l === arrasto.inicio.l && cel.c === arrasto.inicio.c) return;   // ainda na primeira letra
+      arrasto.moveu = true;
+      limparSelecao();   // começou a arrastar: esquece uma letra que estava marcada pelo toque
+    }
+    e.preventDefault();
+    gradeLetras.querySelectorAll(".sel").forEach(function (b) { b.classList.remove("sel"); });
+    arrasto.celulas = caminho(arrasto.inicio, cel);
+    arrasto.celulas.forEach(function (p) { botoesLetras[p[0]][p[1]].classList.add("sel"); });
+  }, { passive: false });
+  function soltarArrasto(e, cancelou) {
+    if (!arrasto || e.pointerId !== arrasto.id) return;
+    const a = arrasto; arrasto = null;
+    if (!a.moveu) return;                       // não arrastou: o toque normal (clique) cuida
+    ignorarClique = true; setTimeout(function () { ignorarClique = false; }, 80);
+    if (!cancelou && a.celulas.length >= 2) avaliar(a.celulas); else limparSelecao();
+  }
+  window.addEventListener("pointerup", function (e) { soltarArrasto(e, false); });
+  window.addEventListener("pointercancel", function (e) { soltarArrasto(e, true); });
 }
 
 /* ---------- 9) PALAVRAS CRUZADAS ---------- */
@@ -928,9 +1307,43 @@ if (areaCruzadas) {
       } else if (e.key === "Backspace" && casa.campo.value === "" && !casa.campo.readOnly) {
         const i = posicaoNaPalavra(casa);
         if (i > 0) { e.preventDefault(); const anterior = casaDe(palavraAtual, i - 1); anterior.campo.focus(); if (!anterior.campo.readOnly) anterior.campo.value = ""; }
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        irParaProxima();
       }
     });
+    casa.campo.enterKeyHint = "next";   // no teclado do celular, o botão Enter aparece como "próximo"
   });
+
+  // ENTER: quando a palavra está completa, vai para a próxima palavra que ainda tem casas vazias
+  // (na ordem das dicas; se chegar ao fim, volta ao começo). Palavras já preenchidas são puladas.
+  function palavraCompleta(idx) {
+    for (let i = 0; i < palavras[idx].resposta.length; i++) if (casaDe(idx, i).campo.value === "") return false;
+    return true;
+  }
+  function primeiraVazia(idx) {
+    for (let i = 0; i < palavras[idx].resposta.length; i++) { const cs = casaDe(idx, i); if (cs.campo.value === "") return cs; }
+    return casaDe(idx, 0);
+  }
+  function irParaPalavra(idx) {
+    direcao = palavras[idx].dir;
+    palavraAtual = idx;
+    primeiraVazia(idx).campo.focus();
+    marcar();
+  }
+  function irParaProxima() {
+    if (terminou) return;
+    if (!palavraCompleta(palavraAtual)) {               // ainda falta letra: vai para a primeira casa vazia desta palavra
+      irParaPalavra(palavraAtual);
+      elFeedbackCruz.textContent = "Ainda faltam letras nesta palavra.";
+      return;
+    }
+    for (let k = 1; k < palavras.length; k++) {
+      const idx = (palavraAtual + k) % palavras.length;
+      if (!palavraCompleta(idx)) { irParaPalavra(idx); return; }
+    }
+    elFeedbackCruz.textContent = "Todas as palavras estão preenchidas! Toque em Verificar para conferir.";   // não há próxima palavra
+  }
 
   function verificarFim() {
     if (terminou) return;
@@ -1093,12 +1506,15 @@ if (botaoDeNovo) {
   raiz.innerHTML =
     '<section class="ecobot-panel clay" id="ecobot-panel" role="dialog" aria-label="Conversa com o EcoBot" hidden>' +
       '<header class="ecobot-header"><span class="ecobot-avatar mascot rosto-feliz" aria-hidden="true"></span>' +
-        '<div><strong>EcoBot</strong><small>Seu amigo da natureza</small></div>' +
+        '<div class="ecobot-titulo"><strong>EcoBot</strong><small>Seu amigo para descobrir e cuidar da natureza!</small></div>' +
         '<button class="ecobot-close" type="button" aria-label="Fechar o chat">×</button></header>' +
       '<div class="ecobot-messages" id="ecobot-msgs" aria-live="polite"></div>' +
       '<form class="ecobot-form" id="ecobot-form" autocomplete="off">' +
-        '<input id="ecobot-input" type="text" maxlength="300" placeholder="Pergunte algo sobre a natureza..." aria-label="Sua pergunta">' +
-        '<button class="clay-button yellow" type="submit">Enviar</button></form>' +
+        '<input id="ecobot-input" type="text" maxlength="300" placeholder="Pergunte algo sobre a natureza..." aria-label="Sua pergunta" aria-describedby="ecobot-aviso">' +
+        '<button class="clay-button yellow ecobot-enviar" type="submit"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M3.4 20.4 21 12 3.4 3.6 3.4 10l12.6 2-12.6 2Z"/></svg><span>Enviar</span></button></form>' +
+      // Aviso de privacidade (o público do site são crianças)
+      '<p class="ecobot-aviso" id="ecobot-aviso"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10.5" width="14" height="10" rx="3" fill="currentColor"/><path d="M8.5 10.5V8a3.5 3.5 0 0 1 7 0v2.5" fill="none" stroke="currentColor" stroke-width="2.4"/></svg>' +
+        '<span>Não compartilhe seu nome, endereço, telefone ou outras informações pessoais na conversa.</span></p>' +
     '</section>' +
     '<button class="ecobot-fab clay-button" id="ecobot-fab" type="button" aria-expanded="false" aria-controls="ecobot-panel">' +
       '<span class="ecobot-avatar mascot rosto-feliz" aria-hidden="true"></span><span>EcoBot</span></button>';
@@ -1119,11 +1535,65 @@ if (botaoDeNovo) {
     return div;
   }
 
+  // Sugestões de perguntas (aparecem antes da primeira mensagem; somem quando a conversa começa).
+  // Para trocar uma sugestão, mude o texto abaixo. "icone" é o desenho pequeno ao lado.
+  const SUGESTOES = [
+    { texto: "Como posso cuidar do meio ambiente?", icone: "folha" },
+    { texto: "Onde devo jogar uma garrafa?", icone: "reciclar" },
+    { texto: "Como economizar água?", icone: "gota" },
+    { texto: "Me conte uma curiosidade sobre animais!", icone: "pata" },
+    { texto: "O que é sustentabilidade?", icone: "planeta" },
+    { texto: "Por que as árvores são importantes?", icone: "arvore" }
+  ];
+  const ICONES_SUGESTAO = {
+    folha: '<path d="M20 4C11 4 5 9 5 17c5 1 10 0 13-4 2-3 2-6 2-9Z" fill="#58b043"/><path d="M5 19c3-5 6-8 11-11" stroke="#2f7a2a" stroke-width="2" fill="none" stroke-linecap="round"/>',
+    reciclar: '<g fill="none" stroke="#e03c31" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4.8a1.8 1.8 0 0 1-1.6-2.7L7.2 9.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.6-2.7l-1.3-2.1"/><path d="m14 16-3 3 3 3"/><path d="M8.3 13.6 7.2 9.5 3.1 10.6"/><path d="m9.3 5.8 1.1-1.9a1.8 1.8 0 0 1 3.1 0l3.9 6.8"/><path d="m13.4 9.6 4.1 1.1 1.1-4.1"/></g>',
+    gota: '<path d="M12 3C9 7.5 6 11 6 14.5a6 6 0 0 0 12 0C18 11 15 7.5 12 3Z" fill="#2f86c6"/><path d="M9.5 14c0 1.5 1 2.6 2.4 2.9" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round"/>',
+    pata: '<g fill="#8b5a2b"><ellipse cx="12" cy="16" rx="4.6" ry="3.8"/><circle cx="6.5" cy="10.5" r="2"/><circle cx="10" cy="6.8" r="2"/><circle cx="14.4" cy="6.8" r="2"/><circle cx="17.8" cy="10.5" r="2"/></g>',
+    planeta: '<circle cx="12" cy="12" r="8.5" fill="#2f86c6"/><path d="M7 7c3 1 3 4 1 5s0 4 2 5M15 5c-1 3 2 3 3 5s-2 4-1 6" fill="none" stroke="#7bd162" stroke-width="2.6" stroke-linecap="round"/>',
+    arvore: '<rect x="10.8" y="13" width="2.4" height="8" rx="1.2" fill="#8b5a2b"/><circle cx="12" cy="9.5" r="6.5" fill="#58b043"/><circle cx="9.5" cy="8" r="1.5" fill="#fff" opacity=".45"/>'
+  };
+  function mostrarSugestoes() {
+    const grupo = document.createElement("div");
+    grupo.className = "ecobot-sugestoes";
+    grupo.setAttribute("role", "group");
+    grupo.setAttribute("aria-label", "Sugestões de perguntas");
+    grupo.innerHTML = '<p class="ecobot-sugestoes-titulo">Escolha uma pergunta ou escreva a sua:</p>';
+    SUGESTOES.forEach(function (s) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "ecobot-sugestao";
+      b.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + ICONES_SUGESTAO[s.icone] + "</svg><span></span>";
+      b.querySelector("span").textContent = s.texto;
+      b.addEventListener("click", function () { enviar(s.texto); });   // envia como se a criança tivesse digitado
+      grupo.appendChild(b);
+    });
+    caixa.appendChild(grupo);
+  }
+  function esconderSugestoes() {
+    const grupo = caixa.querySelector(".ecobot-sugestoes");
+    if (grupo) grupo.remove();
+  }
+
+  // "EcoBot está digitando": três pontinhos animados enquanto a resposta não chega
+  function digitando() {
+    const div = document.createElement("div");
+    div.className = "ecobot-msg bot pensando";
+    div.innerHTML = '<span class="ecobot-pontos" aria-hidden="true"><i></i><i></i><i></i></span><span class="sr-only">EcoBot está digitando...</span>';
+    caixa.appendChild(div);
+    caixa.scrollTop = caixa.scrollHeight;
+    return div;
+  }
+
   function abrir(abrirAgora) {
     painel.hidden = !abrirAgora;
     botao.setAttribute("aria-expanded", abrirAgora ? "true" : "false");
     if (abrirAgora) {
-      if (!caixa.children.length) mensagem("Olá! Eu sou o EcoBot. Quer aprender algo legal sobre a natureza ou os animais hoje? 🌿🐾", "bot");
+      if (!caixa.children.length) {
+        mensagem("Olá! Eu sou o EcoBot. Quer aprender algo legal sobre a natureza ou os animais hoje? 🌿🐾", "bot");
+        mostrarSugestoes();
+      }
+      caixa.scrollTop = caixa.scrollHeight;
       campo.focus();
     }
   }
@@ -1131,11 +1601,13 @@ if (botaoDeNovo) {
   raiz.querySelector(".ecobot-close").addEventListener("click", function () { abrir(false); botao.focus(); });
   document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !painel.hidden) abrir(false); });
 
-  async function perguntar(texto) {
+  // "sinal" permite cancelar o pedido quando passa do tempo limite (veja TEMPO_LIMITE em enviar)
+  async function perguntar(texto, sinal) {
     // Modo servidor (o certo para o site publicado): a chave fica guardada no Worker
     if (ECOBOT_URL) {
       const r = await fetch(ECOBOT_URL, {
         method: "POST",
+        signal: sinal,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           conversa: historico.map(function (m) { return { papel: m.role, texto: m.parts[0].text }; }).concat([{ papel: "user", texto: texto }])
@@ -1154,6 +1626,7 @@ if (botaoDeNovo) {
     if (!chave || chave.indexOf("COLE_") === 0) return "O EcoBot ainda está dormindo (falta a chave da IA). Peça ajuda a um adulto! 😴";
     const resposta = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + MODELO + ":generateContent", {
       method: "POST",
+      signal: sinal,
       headers: { "Content-Type": "application/json", "x-goog-api-key": chave },
       body: JSON.stringify({
         systemInstruction: { parts: [{ text: PERSONALIDADE }] },
@@ -1174,30 +1647,60 @@ if (botaoDeNovo) {
     return parte.text.replace(/\*+/g, "").trim();
   }
 
-  form.addEventListener("submit", async function (e) {
+  form.addEventListener("submit", function (e) {
     e.preventDefault();
-    const texto = campo.value.trim();
+    enviar(campo.value.trim());
+  });
+
+  // Envia uma pergunta (digitada no campo ou tocada nas sugestões)
+  // Enquanto o EcoBot responde: o botão Enviar fica desligado (não dá para mandar duas perguntas juntas)
+  const botaoEnviar = form.querySelector(".ecobot-enviar");
+  function marcarRespondendo(sim) {
+    ocupado = sim;
+    botaoEnviar.disabled = sim;
+    botaoEnviar.setAttribute("aria-label", sim ? "Aguarde, o EcoBot está respondendo" : "Enviar");
+    painel.classList.toggle("respondendo", sim);
+    campo.placeholder = sim ? "O EcoBot está respondendo..." : "Pergunte algo sobre a natureza...";
+  }
+
+  // Tempo máximo de espera pela resposta (em milissegundos). Depois disso, o pedido é cancelado
+  // e a criança pode perguntar de novo.
+  const TEMPO_LIMITE = 30000;
+  let numeroDoPedido = 0;   // cada pergunta tem um número: uma resposta atrasada de um pedido antigo é ignorada
+
+  async function enviar(texto) {
     if (!texto || ocupado) return;
-    ocupado = true;
+    marcarRespondendo(true);
+    const meuPedido = ++numeroDoPedido;
     campo.value = "";
+    esconderSugestoes();   // a conversa começou: as sugestões saem para dar espaço às mensagens
     mensagem(texto, "user");
-    const pensando = mensagem("EcoBot está pensando...", "bot pensando");
+    const pensando = digitando();
+    const controle = window.AbortController ? new AbortController() : null;
+    let esgotou = false;
+    const relogio = setTimeout(function () { esgotou = true; if (controle) controle.abort(); }, TEMPO_LIMITE);
     let resposta;
     try {
-      resposta = await perguntar(texto);
+      resposta = await perguntar(texto, controle ? controle.signal : undefined);
+      if (esgotou) throw new Error("tempo esgotado");   // navegador sem AbortController: ignora a resposta atrasada
       if (resposta.indexOf("😴") === -1 && resposta.indexOf("🌳") === -1 && resposta.indexOf("⏳") === -1) {
         historico.push({ role: "user", parts: [{ text: texto }] }, { role: "model", parts: [{ text: resposta }] });
         while (historico.length > MAX_HISTORICO) historico.shift();
       }
     } catch (erro) {
-      console.error("EcoBot:", erro);
-      resposta = "Erro de conexão com a floresta mágica da IA. Tente de novo mais tarde! 🌳";
+      console.error("EcoBot:", esgotou ? "a resposta passou de " + (TEMPO_LIMITE / 1000) + " segundos" : erro);
+      resposta = esgotou
+        ? "Puxa, o EcoBot não conseguiu responder agora. 😕 Tente perguntar de novo daqui a pouquinho! 🌳"
+        : "Erro de conexão com a floresta mágica da IA. Tente de novo mais tarde! 🌳";
+    } finally {
+      clearTimeout(relogio);
+      pensando.remove();   // os pontinhos sempre somem, com resposta ou com erro
     }
-    pensando.remove();
+    if (meuPedido !== numeroDoPedido) return;
     mensagem(resposta, "bot");
-    ocupado = false;
+    marcarRespondendo(false);
     campo.focus();
-  });
+  }
 
   // Carrega a chave local (js/config.js) só no modo local; com o servidor (ECOBOT_URL) ela nem é necessária
   if (!ECOBOT_URL && !window.ECOKIDS_CONFIG) {
