@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=23">
+  <link rel="stylesheet" href="css/style.css?v=25">
   <script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("ecokids-tema");if(t==="escuro"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.tema="escuro"}catch(e){}</script>
 </head>
 <body>
@@ -53,6 +53,23 @@
         <symbol id="tufo" viewBox="0 0 60 42">
           <g fill="url(#g-folha)"><path d="M10 42C12 27 13 16 6 4c14 9 17 23 15 38Z"/><path d="M24 42c1-19 4-30 6-42 7 13 8 28 5 42Z"/><path d="M37 42c2-13 8-24 18-32-2 14-6 24-8 32Z"/></g>
         </symbol>
+        <!-- ramo com três folhas (enfeita os cantos da placa da página inicial) -->
+        <symbol id="ramo" viewBox="0 0 120 92">
+          <path d="M62 88C60 68 52 50 38 38" fill="none" stroke="#3f8f2c" stroke-width="4.5" stroke-linecap="round"/>
+          <path d="M40 40C20 44 5 33 2 10c22-4 38 8 38 30Z" fill="url(#g-folha)"/>
+          <path d="M54 58C53 34 68 16 94 11c3 25-12 42-40 47Z" fill="url(#g-folha)"/>
+          <path d="M60 76c11-16 31-22 56-15-9 20-31 27-56 15Z" fill="url(#g-folha)"/>
+          <g fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" opacity=".45"><path d="M36 36C26 28 16 22 8 16"/><path d="M58 52c8-12 18-24 30-34"/><path d="M66 72c14-4 28-7 42-8"/></g>
+          <g fill="#fff" opacity=".35"><ellipse cx="18" cy="20" rx="6" ry="3" transform="rotate(30 18 20)"/><ellipse cx="78" cy="24" rx="7" ry="3" transform="rotate(-40 78 24)"/></g>
+        </symbol>
+        <!-- borboleta de massinha: a cor das asas vem do CSS (color) -->
+        <symbol id="borboleta" viewBox="0 0 64 52">
+          <g fill="currentColor"><ellipse cx="18" cy="17" rx="15" ry="13"/><ellipse cx="46" cy="17" rx="15" ry="13"/><ellipse cx="21" cy="37" rx="10" ry="9"/><ellipse cx="43" cy="37" rx="10" ry="9"/></g>
+          <g fill="url(#g-volume)"><ellipse cx="18" cy="17" rx="15" ry="13"/><ellipse cx="46" cy="17" rx="15" ry="13"/><ellipse cx="21" cy="37" rx="10" ry="9"/><ellipse cx="43" cy="37" rx="10" ry="9"/></g>
+          <g fill="#fff" opacity=".55"><circle cx="15" cy="15" r="4"/><circle cx="49" cy="15" r="4"/></g>
+          <rect x="29" y="12" width="6" height="32" rx="3" fill="#4a3a2a"/>
+          <path d="M31 12c-2-5-5-8-9-9M33 12c2-5 5-8 9-9" fill="none" stroke="#4a3a2a" stroke-width="2" stroke-linecap="round"/>
+        </symbol>
         <symbol id="nuvem" viewBox="0 0 200 92">
           <path d="M30 88C9 88 3 68 17 59c-4-19 16-30 33-22 6-21 35-29 51-12 12-19 47-17 53 9 21-4 40 11 34 29 13 8 7 25-10 25Z" fill="url(#g-nuvem)"/>
           <path d="M56 40c4-12 19-19 33-12" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" opacity=".7"/>
@@ -90,19 +107,27 @@
         <svg class="planta tufo t2"><use href="#tufo"/></svg>
         <svg class="planta tufo t3"><use href="#tufo"/></svg>
         <svg class="planta tufo t4"><use href="#tufo"/></svg>
+        <svg class="planta flor f7"><use href="#flor"/></svg>
+        <svg class="planta flor f8"><use href="#flor"/></svg>
+        <svg class="planta tufo t5"><use href="#tufo"/></svg>
+        <svg class="planta tufo t6"><use href="#tufo"/></svg>
+        <svg class="borboleta b1" viewBox="0 0 64 52"><use href="#borboleta"/></svg>
+        <svg class="borboleta b2" viewBox="0 0 64 52"><use href="#borboleta"/></svg>
       </div>
 
       <div class="hero-copy">
         <span class="clay-tag lime">Aprenda brincando</span>
-        <!-- Placa de madeira (de massinha) com o título -->
-        <div class="placa">
-          <span class="placa-folhas" aria-hidden="true"><svg viewBox="0 0 60 42"><use href="#tufo"/></svg></span>
+        <!-- Placa de madeira (de massinha) com o título e a apresentação; ramos de folhas nos cantos -->
+        <div class="placa placa-hero">
+          <span class="placa-ramo ramo-1" aria-hidden="true"><svg viewBox="0 0 120 92"><use href="#ramo"/></svg></span>
+          <span class="placa-ramo ramo-2" aria-hidden="true"><svg viewBox="0 0 120 92"><use href="#ramo"/></svg></span>
+          <span class="placa-ramo ramo-3" aria-hidden="true"><svg viewBox="0 0 120 92"><use href="#ramo"/></svg></span>
           <h1>Juntos por um <span>planeta melhor!</span></h1>
+          <p>Jogos e dicas rápidas com o Tito, a tartaruga que cuida do mundo, para aprender a proteger a natureza.</p>
         </div>
-        <p>Jogos e dicas rápidas com o Tito, a tartaruga que cuida do mundo, para aprender a proteger a natureza.</p>
         <div class="hero-actions">
-          <a class="clay-button dark" href="jogos.html">Jogar agora</a>
-          <a class="clay-button light" href="aprenda.html">Aprender</a>
+          <a class="clay-button dark" href="jogos.html"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.6c0-1.2 1.3-1.9 2.3-1.3l9 6.4c.9.6.9 1.9 0 2.6l-9 6.4c-1 .6-2.3-.1-2.3-1.3Z"/></svg>Jogar agora</a>
+          <a class="clay-button light" href="aprenda.html"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round" aria-hidden="true"><path d="M12 6.5C10 5 7 4.6 3.5 5v13c3.5-.4 6.5 0 8.5 1.5 2-1.5 5-1.9 8.5-1.5V5C17 4.6 14 5 12 6.5Z" fill="currentColor" fill-opacity=".18"/><path d="M12 6.5v13"/></svg>Aprender</a>
         </div>
       </div>
       <div class="hero-mascot-wrap">
@@ -166,7 +191,7 @@
       <div></div>
     </div>
   </main>
-  <script src="js/script.js?v=21"></script>
+  <script src="js/script.js?v=23"></script>
   <script src="js/tito.js?v=21"></script>
 </body>
 </html>
