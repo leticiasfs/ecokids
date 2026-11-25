@@ -9,9 +9,6 @@
    A interatividade do Tito (olhar, respirar, modelo 3D) fica em js/tito.js.
    ============================================================ */
 
-// Desenhos ilustrados usados na janela do Aprenda (bloco 2)
-const ARTE = {"reciclar": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M14 22h36l-3 31a5 5 0 0 1-5 4.5H22a5 5 0 0 1-5-4.5Z\" fill=\"#58b043\"/><path d=\"M17 24h8l1 30h-3a4 4 0 0 1-4-3.6Z\" fill=\"#fff\" opacity=\".28\"/><path d=\"M45 24h5l-2.6 28a5 5 0 0 1-3 4Z\" fill=\"#1d6a2a\" opacity=\".25\"/><rect x=\"11\" y=\"13\" width=\"42\" height=\"11\" rx=\"5.5\" fill=\"#3f9a37\"/><rect x=\"25\" y=\"8\" width=\"14\" height=\"8\" rx=\"4\" fill=\"#3f9a37\"/><rect x=\"14\" y=\"14.5\" width=\"36\" height=\"3\" rx=\"1.5\" fill=\"#fff\" opacity=\".35\"/><g transform=\"translate(17.2 25.6) scale(1.25)\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5\"/><path d=\"M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12\"/><path d=\"m14 16-3 3 3 3\"/><path d=\"M8.293 13.596 7.196 9.5 3.1 10.598\"/><path d=\"m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843\"/><path d=\"m13.378 9.633 4.096 1.098 1.097-4.096\"/></g></svg>", "agua": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M32 5C22 19 12 29 12 40a20 20 0 0 0 40 0C52 29 42 19 32 5Z\" fill=\"#3b9de3\"/><path d=\"M32 5C27 12 22 18 18 24c6-3 11-9 14-19Z\" fill=\"#fff\" opacity=\".35\"/><path d=\"M46 36c2 9-4 17-13 19 10 1 19-6 19-15 0-2-1-4-2-6Z\" fill=\"#1c64b4\" opacity=\".3\"/><circle cx=\"25\" cy=\"40\" r=\"3\" fill=\"#17402d\"/><circle cx=\"39\" cy=\"40\" r=\"3\" fill=\"#17402d\"/><path d=\"M26 47q6 6 12 0\" fill=\"none\" stroke=\"#17402d\" stroke-width=\"3\" stroke-linecap=\"round\"/><circle cx=\"22\" cy=\"46\" r=\"2.6\" fill=\"#ff9aa2\" opacity=\".7\"/><circle cx=\"42\" cy=\"46\" r=\"2.6\" fill=\"#ff9aa2\" opacity=\".7\"/></svg>", "energia": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"58\" rx=\"18\" ry=\"3.5\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M32 4a20 20 0 0 0-11 36c2 2 3 4 3 7h16c0-3 1-5 3-7A20 20 0 0 0 32 4Z\" fill=\"#ffd23f\"/><path d=\"M20 14a18 18 0 0 0-4 14c1-9 6-14 13-16Z\" fill=\"#fff\" opacity=\".5\"/><path d=\"M45 20c3 9-1 17-8 21l-1 6h4c0-3 1-5 3-7a20 20 0 0 0 2-20Z\" fill=\"#e8a000\" opacity=\".3\"/><rect x=\"23\" y=\"47\" width=\"18\" height=\"6\" rx=\"3\" fill=\"#9fb2b8\"/><rect x=\"26\" y=\"53\" width=\"12\" height=\"6\" rx=\"3\" fill=\"#7e9399\"/><path d=\"M32 40V28\" stroke=\"#3f9a37\" stroke-width=\"3.2\" stroke-linecap=\"round\"/><path d=\"M32 30c-6 0-9-3-9-8 6 0 9 3 9 8Zm0 0c6 0 9-3 9-8-6 0-9 3-9 8Z\" fill=\"#58b043\"/></svg>", "folha": "<svg class=\"ek-icon\" viewBox=\"0 0 64 64\" aria-hidden=\"true\"><ellipse cx=\"32\" cy=\"57\" rx=\"22\" ry=\"4\" fill=\"#1b4a2a\" opacity=\".18\"/><path d=\"M8 56c1-9 10-14 24-14s23 5 24 14Z\" fill=\"#9a6a3d\"/><path d=\"M13 54c3-6 9-9 17-10-6 2-11 6-12 10Z\" fill=\"#fff\" opacity=\".25\"/><path d=\"M32 44V24\" stroke=\"#3f9a37\" stroke-width=\"4.5\" stroke-linecap=\"round\"/><path d=\"M32 30C20 32 11 26 10 14c13-1 22 5 22 16Z\" fill=\"#6cc04a\"/><path d=\"M32 24c0-12 8-19 22-19 0 13-8 20-22 19Z\" fill=\"#58b043\"/><path d=\"M14 17c5 0 10 3 14 8\" fill=\"none\" stroke=\"#fff\" stroke-width=\"2.4\" stroke-linecap=\"round\" opacity=\".5\"/></svg>"};
-
 // 0) TEMA CLARO / ESCURO ------------------------------------
 // Guarda a escolha em localStorage ("ecokids-tema") e troca o atributo data-tema do <html>.
 // Se a pessoa nunca escolheu, o script do <head> segue o tema do sistema (claro ou escuro).
@@ -75,85 +72,217 @@ const ICONES = {
   quebraCabeca: '<svg class="icon" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 21h12a6 6 0 1 1 10 0h14v13a6 6 0 1 0 0 10v8H14V40a6 6 0 1 1 0-10Z"/></svg>'
 };
 
-/* ---------- 2) JANELA (modal) DA PÁGINA APRENDA ---------- */
-// Conteúdo de cada cartão. "cor" usa as classes do CSS (.bin-color.blue, etc.)
+/* ---------- 2) JANELA (modal) DA PÁGINA APRENDA: as miniaulas ---------- */
+// Ilustrações de massinha usadas nas miniaulas (desenhos SVG próprios do EcoKids).
+// O volume de massinha vem do filtro "ek-massa", que fica no HTML da página aprenda.html.
+const ILUSTRA = (function () {
+  const M = ' filter="url(#ek-massa)"';
+  const SOMBRA = '<ellipse cx="32" cy="59.5" rx="19" ry="3.2" fill="#0b2200" opacity=".2"/>';
+  const RECICLAR = '<path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.203a1.83 1.83 0 0 0 1.556-.89 1.784 1.784 0 0 0 0-1.775l-1.226-2.12"/><path d="m14 16-3 3 3 3"/><path d="M8.293 13.596 7.196 9.5 3.1 10.598"/><path d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843"/><path d="m13.378 9.633 4.096 1.098 1.097-4.096"/>';
+  function gota(x, y, cor) { return '<path d="M' + x + " " + y + 'c-2.6 3.6-3.6 5.6-3.6 7.2a3.6 3.6 0 0 0 7.2 0c0-1.6-1-3.6-3.6-7.2Z" fill="' + (cor || "#3b9de3") + '"/>'; }
+  function svg(conteudo) { return '<svg class="ilustra" viewBox="0 0 64 64" aria-hidden="true">' + SOMBRA + conteudo + "</svg>"; }
+  const raios = [0, 45, 90, 135, 180, 225, 270, 315].map(function (a) { return '<rect x="29.5" y="3" width="5" height="10" rx="2.5" transform="rotate(' + a + ' 32 32)"/>'; }).join("");
+  const pas = [0, 120, 240].map(function (a) { return '<path d="M32 24c-3-7-2.5-15 1-19 2.5 6 1.5 13-1 19Z" transform="rotate(' + a + ' 32 24)"/>'; }).join("");
+
+  return {
+    // lixeira de massinha na cor do material (cor do corpo, cor da tampa, cor do símbolo)
+    lixeira: function (cor, tampa, simbolo) {
+      return svg('<g' + M + '><path d="M15 23h34l-3.4 29.5a6 6 0 0 1-6 5.5H24.4a6 6 0 0 1-6-5.5Z" fill="' + cor + '"/><rect x="11" y="13" width="42" height="12" rx="6" fill="' + tampa + '"/><rect x="25.5" y="8" width="13" height="8" rx="4" fill="' + tampa + '"/></g>' +
+        '<g transform="translate(20 28)" fill="none" stroke="' + simbolo + '" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' + RECICLAR + "</g>");
+    },
+    reciclar: svg('<g' + M + '><g transform="translate(4.5 3) scale(2.3)" fill="none" stroke="#3fa047" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">' + RECICLAR + "</g></g>"),
+    composto: svg('<g' + M + '><path d="M7 56c2-12 12-18 25-18s23 6 25 18Z" fill="#8b5a2b"/><path d="M30.5 40c0-6 0-11 1-16h2c1 5 1 10 1 16Z" fill="#4c9a33"/><path d="M32 27C22 29 14 24 12 14c11-2 20 3 20 13Z" fill="#6cc04a"/><path d="M33 23c0-10 7-16 19-17 1 11-7 17-19 17Z" fill="#58b043"/><path d="M38 45c4-6 10-7 14-5-3 1-6 3-8 6Z" fill="#ffd23f"/></g><g fill="#5e3a18"><circle cx="19" cy="50" r="2"/><circle cx="29" cy="53" r="1.5"/><circle cx="45" cy="52" r="2"/></g>'),
+    biodegradavel: svg('<g' + M + '><path d="M8 57c2-8 11-12 24-12s22 4 24 12Z" fill="#8b5a2b"/><path d="M13 43C15 25 31 12 54 11c0 23-14 35-41 32Z" fill="#e8a33a"/></g><path d="M16 40C26 30 37 22 50 15" stroke="#b86e1c" stroke-width="2.6" fill="none" stroke-linecap="round"/><g fill="#5e3a18"><circle cx="22" cy="53" r="1.6"/><circle cx="40" cy="52" r="1.8"/></g>'),
+    garrafa: svg('<g' + M + '><rect x="25" y="4" width="14" height="8" rx="3" fill="#1f74b8"/><path d="M27 11h10v5c6 3 9 7 9 13v23a6 6 0 0 1-6 6H24a6 6 0 0 1-6-6V29c0-6 3-10 9-13Z" fill="#8fd3f4"/><rect x="18" y="31" width="28" height="13" fill="#2f86c6"/></g><path d="M23 22c-1 6-1 22 0 30" stroke="#fff" stroke-width="2.6" opacity=".6" fill="none" stroke-linecap="round"/><path d="M32 41c-4 0-6-3-6-6 4 0 6 2 6 6Zm0 0c3 0 5-3 5-6-3 0-5 2-5 6Z" fill="#c6ef9a"/>'),
+    sacola: svg('<g' + M + '><path d="M23 25v-5a9 9 0 0 1 18 0v5" fill="none" stroke="#b98a4e" stroke-width="4.5" stroke-linecap="round"/><path d="M12 24h40l-3 29a5 5 0 0 1-5 4.5H20a5 5 0 0 1-5-4.5Z" fill="#f3dcae"/></g><path d="M32 50c-7-1-10-6-9-13 7 0 11 5 9 13Zm0 0c6-1 9-6 8-12-6 1-9 5-8 12Z" fill="#58b043"/>'),
+    gota: svg('<g' + M + '><path d="M32 4C22 18 12 28 12 40a20 20 0 0 0 40 0C52 28 42 18 32 4Z" fill="#3b9de3"/></g><circle cx="25" cy="40" r="3" fill="#17402d"/><circle cx="39" cy="40" r="3" fill="#17402d"/><circle cx="26" cy="39" r="1" fill="#fff"/><circle cx="40" cy="39" r="1" fill="#fff"/><path d="M27 47q5 5 10 0" fill="none" stroke="#17402d" stroke-width="2.8" stroke-linecap="round"/><circle cx="21" cy="46" r="2.6" fill="#ff9aa2" opacity=".75"/><circle cx="43" cy="46" r="2.6" fill="#ff9aa2" opacity=".75"/>'),
+    torneira: svg('<g' + M + '><rect x="5" y="17" width="10" height="17" rx="3" fill="#9fb2b8"/><path d="M13 19h23a10 10 0 0 1 10 10v9H36v-7H13Z" fill="#c3d0d6"/><rect x="22" y="8" width="16" height="6" rx="3" fill="#e0453a"/><rect x="28" y="12" width="4" height="8" fill="#9fb2b8"/></g><g' + M + ">" + gota(41, 43) + "</g>"),
+    chuveiro: svg('<g' + M + '><path d="M12 5v8a6 6 0 0 0 6 6h14v6" fill="none" stroke="#b9c7cf" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M17 36a15 12 0 0 1 30 0Z" fill="#9fb2b8"/></g><g fill="#3b9de3"><ellipse cx="22" cy="44" rx="2" ry="3"/><ellipse cx="32" cy="45" rx="2" ry="3"/><ellipse cx="42" cy="44" rx="2" ry="3"/><ellipse cx="27" cy="53" rx="2" ry="3"/><ellipse cx="37" cy="53" rx="2" ry="3"/></g>'),
+    chuva: svg('<g' + M + '><path d="M17 36C8 36 6 26 13 23c0-9 10-13 16-8 4-8 17-8 20 1 8 0 11 9 6 14-1 4-4 6-8 6Z" fill="#eaf2f8"/></g><g' + M + ">" + gota(20, 42) + gota(32, 46) + gota(44, 42) + "</g>"),
+    rio: svg('<g' + M + '><path d="M6 34c5-5 10-5 13 0s9 5 13 0 9-5 13 0 9 5 13 0v20a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4Z" fill="#5fb3ea"/><path d="M6 45c5-4 10-4 13 0s9 4 13 0 9-4 13 0 9 4 13 0v9a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4Z" fill="#1f74b8"/></g><path d="M12 31c3-3 6-3 8 0M38 31c3-3 6-3 8 0" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" opacity=".8"/>'),
+    regador: svg('<g' + M + '><path d="M36 37l15-13 5 5-15 13Z" fill="#4c9a33"/><path d="M12 28h28l-2 25a4 4 0 0 1-4 4H18a4 4 0 0 1-4-4Z" fill="#58b043"/><path d="M18 28a9 9 0 0 1 16 0" fill="none" stroke="#4c9a33" stroke-width="4"/></g><g fill="#3b9de3"><ellipse cx="58" cy="35" rx="1.8" ry="2.8"/><ellipse cx="54" cy="40" rx="1.8" ry="2.8"/><ellipse cx="59" cy="44" rx="1.8" ry="2.8"/></g>'),
+    lampada: svg('<g' + M + '><path d="M32 4a20 20 0 0 0-11 36c2 2 3 4 3 7h16c0-3 1-5 3-7A20 20 0 0 0 32 4Z" fill="#ffd23f"/><rect x="23" y="47" width="18" height="6" rx="3" fill="#a9b9be"/><rect x="26" y="53" width="12" height="6" rx="3" fill="#8597a0"/></g><path d="M26 30c2-4 4 4 6 0s4 4 6 0" stroke="#e08a00" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M29 34v12M35 34v12" stroke="#e08a00" stroke-width="2" opacity=".6"/>'),
+    tomada: svg('<g' + M + '><rect x="10" y="9" width="44" height="46" rx="13" fill="#f4f6f2"/><circle cx="32" cy="32" r="14" fill="#dfe6e2"/></g><g fill="#5b6b66"><circle cx="26.5" cy="29.5" r="3"/><circle cx="37.5" cy="29.5" r="3"/><circle cx="32" cy="38.5" r="3"/></g>'),
+    sol: svg('<g' + M + '><g fill="#ff9f1c">' + raios + '</g><circle cx="32" cy="32" r="14" fill="#ffd23f"/></g><circle cx="27" cy="30" r="2" fill="#7a4a00"/><circle cx="37" cy="30" r="2" fill="#7a4a00"/><path d="M27.5 36q4.5 4 9 0" fill="none" stroke="#7a4a00" stroke-width="2.4" stroke-linecap="round"/>'),
+    catavento: svg('<g' + M + '><path d="M8 58c3-5 12-8 24-8s21 3 24 8Z" fill="#6aae38"/><path d="M30 26h4l2.5 28h-9Z" fill="#e8eef0"/><g fill="#f4f8f9">' + pas + '</g><circle cx="32" cy="24" r="4" fill="#c3d0d6"/></g>'),
+    janela: svg('<g' + M + '><rect x="9" y="9" width="46" height="46" rx="8" fill="#c98a4b"/></g><rect x="14" y="14" width="36" height="36" rx="4" fill="#bfe4f7"/><circle cx="41" cy="24" r="6" fill="#ffd23f"/><path d="M20 44c4-5 9-5 13 0" fill="#7cc35a"/><path d="M32 14v36M14 32h36" stroke="#c98a4b" stroke-width="4"/>'),
+    arvore: svg('<g' + M + '><path d="M28 34h8l1.5 22h-11Z" fill="#9a6a3d"/><circle cx="20" cy="31" r="11" fill="#4c9a33"/><circle cx="44" cy="31" r="11" fill="#4c9a33"/><circle cx="32" cy="22" r="17" fill="#58b043"/></g><g fill="#e0453a"><circle cx="24" cy="20" r="2.6"/><circle cx="40" cy="26" r="2.6"/><circle cx="33" cy="13" r="2.4"/></g>'),
+    muda: svg('<g' + M + '><path d="M8 56c1-9 10-14 24-14s23 5 24 14Z" fill="#9a6a3d"/><path d="M30 44V24h4v20Z" fill="#3f9a37"/><path d="M32 30C20 32 11 26 10 14c13-1 22 5 22 16Z" fill="#6cc04a"/><path d="M32 24c0-12 8-19 22-19 0 13-8 20-22 19Z" fill="#58b043"/></g>'),
+    ar: svg('<g' + M + '><path d="M7 27h29a7.5 7.5 0 1 0-7.5-7.5" fill="none" stroke="#8fd3f4" stroke-width="5" stroke-linecap="round"/><path d="M7 39h39a7.5 7.5 0 1 1-7.5 7.5" fill="none" stroke="#5fb3ea" stroke-width="5" stroke-linecap="round"/><path d="M47 22c0-8 5-12 12-12 0 8-5 12-12 12Z" fill="#58b043"/></g>'),
+    joaninha: svg('<g' + M + '><circle cx="32" cy="21" r="8" fill="#2b2b2b"/><path d="M14 38a18 17 0 0 1 36 0c0 10-8 17-18 17S14 48 14 38Z" fill="#e0453a"/></g><path d="M32 22v33" stroke="#2b2b2b" stroke-width="2.4"/><g fill="#2b2b2b"><circle cx="23" cy="36" r="3.2"/><circle cx="41" cy="36" r="3.2"/><circle cx="24.5" cy="47" r="2.6"/><circle cx="39.5" cy="47" r="2.6"/></g><g fill="#fff"><circle cx="29" cy="19" r="1.6"/><circle cx="35" cy="19" r="1.6"/></g><path d="M28 14c-2-4-4-6-7-6M36 14c2-4 4-6 7-6" fill="none" stroke="#2b2b2b" stroke-width="2" stroke-linecap="round"/>'),
+    peixe: svg('<g' + M + '><path d="M44 32l15-11v22Z" fill="#ff8c42"/><ellipse cx="29" cy="32" rx="20" ry="13" fill="#ffa552"/></g><circle cx="19" cy="29" r="3" fill="#17402d"/><circle cx="18" cy="28" r="1" fill="#fff"/><path d="M30 24c3 5 3 11 0 16" stroke="#e0752a" stroke-width="2.4" fill="none" stroke-linecap="round"/><g fill="none" stroke="#5fb3ea" stroke-width="2"><circle cx="8" cy="20" r="2.5"/><circle cx="12" cy="12" r="1.8"/></g>'),
+    toco: svg('<g' + M + '><path d="M7 57c2-6 10-9 25-9s23 3 25 9Z" fill="#6aae38"/><path d="M20 28v21c-3 2-4 5-4 5h32s-1-3-4-5V28Z" fill="#9a6a3d"/><ellipse cx="32" cy="28" rx="12" ry="5" fill="#d9a062"/></g><ellipse cx="32" cy="28" rx="7" ry="2.8" fill="none" stroke="#9a6a3d" stroke-width="1.6"/><ellipse cx="32" cy="28" rx="2.6" ry="1.1" fill="#9a6a3d"/><path d="M45 40c3-1 6 0 7 3" stroke="#4c9a33" stroke-width="2.6" fill="none" stroke-linecap="round"/>'),
+    papel: svg('<g' + M + '><path d="M16 7h22l11 11v36a3 3 0 0 1-3 3H16a3 3 0 0 1-3-3V10a3 3 0 0 1 3-3Z" fill="#fbfbf6"/><path d="M38 7v11h11Z" fill="#dfe3d6"/></g><g stroke="#9fb2b8" stroke-width="2.4" stroke-linecap="round"><path d="M19 26h20M19 33h23M19 40h23M19 47h14"/></g>'),
+    flor: svg('<g' + M + '><path d="M30 58V32h4v26Z" fill="#4c9a33"/><path d="M32 50c-9 0-13-5-13-11 8 0 13 4 13 11Z" fill="#58b043"/><g fill="#ff7aa8"><circle cx="32" cy="11" r="8"/><circle cx="42" cy="18" r="8"/><circle cx="38" cy="29" r="8"/><circle cx="26" cy="29" r="8"/><circle cx="22" cy="18" r="8"/></g><circle cx="32" cy="21" r="6.5" fill="#ffd23f"/></g>')
+  };
+})();
+
+// Conteúdo das miniaulas. Cada tema tem: introdução, tópicos (seções) e uma curiosidade ("Você sabia?").
+// Tipos de seção:
+//   "lixeiras" = as 5 cores da coleta seletiva     "cartoes" = cartõezinhos com ilustração
+//   "lista"    = linhas com ilustração e texto      "dicas"   = o que fazer (com ✓)
+//   "evite"    = atitudes que desperdiçam (com ✗)
+// "icone" é o nome de um desenho do ILUSTRA (acima). Use <b>...</b> para destacar palavras.
+// IMPORTANTE: as palavras do caça-palavras e das palavras cruzadas aparecem neste conteúdo. Se tirar uma, confira os jogos.
+// Vídeo do Tito: quando tiver o arquivo, escreva o caminho em "video" (ex.: video: "videos/agua.mp4", capa: "videos/agua.jpg").
 const TEMAS = {
   lixeira: {
     titulo: "Lixeira",
-    linhas: [
-      { simbolo: true, cor: "blue", titulo: "Azul = <b>Papel</b>", texto: "jornal, caderno, caixa" },
-      { simbolo: true, cor: "red", titulo: "Vermelha = <b>Plástico</b>", texto: "garrafa PET, pote, sacola" },
-      { simbolo: true, cor: "green", titulo: "Verde = <b>Vidro</b>", texto: "garrafa, pote de conserva" },
-      { simbolo: true, cor: "yellow", titulo: "Amarela = <b>Metal</b>", texto: "lata, tampinha, prego e parafuso" },
-      { simbolo: true, cor: "brown", titulo: "Marrom = <b>Orgânico</b>", texto: "casca de fruta, casca de ovo, restos de comida" },
-      { cor: "green", icone: "reciclar", titulo: "<b>Reciclar</b>", texto: "é transformar o lixo em um produto novo e útil" },
-      { cor: "brown", icone: "folha", titulo: "<b>Compostagem</b>", texto: "restos de comida viram adubo rico para as plantas (composto orgânico)" },
-      { cor: "blue", icone: "agua", titulo: "Garrafa <b>reutilizável</b>", texto: "usar a mesma garrafa várias vezes evita muito lixo de plástico. A retornável volta para ser usada de novo" },
-      { cor: "green", icone: "folha", titulo: "<b>Biodegradável</b>", texto: "é o que se decompõe com a ajuda da natureza e vira parte da terra" }
-    ]
+    imagem: "imagens/cuidar/lixeira",
+    intro: "<b>Lixo</b> é tudo o que a gente joga fora. Mas muita coisa que vai para a lixeira pode ganhar uma vida nova!",
+    secoes: [
+      { titulo: "Cada cor guarda um material", tipo: "lixeiras", itens: [
+        { cor: "#0072ce", tampa: "#00599f", simbolo: "#fff", titulo: "Azul = <b>Papel</b>", texto: "jornal, caderno, caixa" },
+        { cor: "#e03c31", tampa: "#b52c22", simbolo: "#fff", titulo: "Vermelha = <b>Plástico</b>", texto: "garrafa PET, pote, sacola" },
+        { cor: "#2e9e4f", tampa: "#227a3b", simbolo: "#fff", titulo: "Verde = <b>Vidro</b>", texto: "garrafa, pote de conserva" },
+        { cor: "#ffd100", tampa: "#e5b400", simbolo: "#17402d", titulo: "Amarela = <b>Metal</b>", texto: "lata, tampinha, prego e parafuso" },
+        { cor: "#8b5a2b", tampa: "#6b4220", simbolo: "#fff", titulo: "Marrom = <b>Orgânico</b>", texto: "casca de fruta, casca de ovo, restos de comida" }
+      ] },
+      { titulo: "O que acontece com o lixo?", tipo: "cartoes", itens: [
+        { icone: "reciclar", titulo: "Reciclar", texto: "é transformar o lixo em um produto novo e útil. Uma lata velha pode virar uma lata nova!" },
+        { icone: "composto", titulo: "Compostagem", texto: "restos de comida viram <b>adubo</b> rico para as plantas, o <b>composto orgânico</b>." },
+        { icone: "biodegradavel", titulo: "Biodegradável", texto: "é o que se decompõe com a ajuda da natureza e vira parte da terra, como a casca de banana." }
+      ] },
+      { titulo: "Como você pode ajudar", tipo: "dicas", itens: [
+        { icone: "reciclar", texto: "<b>Separe o lixo</b> antes de jogar fora: cada material na sua cor." },
+        { icone: "garrafa", texto: "Use uma <b>garrafa reutilizável</b>: usar a mesma garrafa várias vezes evita muito lixo de plástico." },
+        { icone: "garrafa", texto: "Prefira a garrafa <b>retornável</b>: ela volta para a fábrica para ser usada de novo." },
+        { icone: "sacola", texto: "Leve uma <b>sacola de pano</b> para as compras." }
+      ] }
+    ],
+    curiosidade: "O <b>vidro</b> pode ser reciclado muitas e muitas vezes, sem perder a qualidade!"
   },
   agua: {
     titulo: "Água",
-    linhas: [
-      { cor: "blue", icone: "agua", titulo: "Torneira <b>fechada</b>", texto: "feche ao escovar os dentes" },
-      { cor: "blue", icone: "agua", titulo: "Banho <b>curto</b>", texto: "um banho rápido gasta menos água" },
-      { cor: "green", icone: "folha", titulo: "<b>Vazamento</b>", texto: "torneira pingando desperdiça: avise um adulto" },
-      { cor: "green", icone: "reciclar", titulo: "<b>Reaproveitar</b>", texto: "a água da chuva ajuda a regar as plantas" }
-    ]
+    imagem: "imagens/cuidar/agua",
+    intro: "Todo ser vivo precisa de <b>água</b>: pessoas, bichos e plantas. A água limpa que bebemos é um tesouro e pode acabar.",
+    secoes: [
+      { titulo: "Onde encontramos água?", tipo: "cartoes", itens: [
+        { icone: "torneira", titulo: "Na torneira", texto: "para beber, cozinhar e escovar os dentes" },
+        { icone: "chuveiro", titulo: "No banho", texto: "para deixar o corpo limpinho" },
+        { icone: "chuva", titulo: "Na chuva", texto: "que enche os rios e molha as plantas" },
+        { icone: "rio", titulo: "No rio e no mar", texto: "onde vivem peixes e muitos outros bichos" }
+      ] },
+      { titulo: "Como economizar água", tipo: "dicas", itens: [
+        { icone: "torneira", texto: "<b>Feche a torneira</b> enquanto escova os dentes." },
+        { icone: "chuveiro", texto: "Tome um <b>banho curto</b>: um banho rápido gasta menos água." },
+        { icone: "regador", texto: "<b>Reaproveite</b> a água da chuva para regar as plantas." }
+      ] },
+      { titulo: "Atitudes que desperdiçam", tipo: "evite", itens: [
+        { texto: "<b>Torneira pingando</b>: o vazamento desperdiça muita água. Avise um adulto!" },
+        { texto: "Deixar a torneira <b>aberta</b> sem estar usando." },
+        { texto: "Lavar a calçada com a <b>mangueira</b> ligada." }
+      ] }
+    ],
+    curiosidade: "Quase toda a água do planeta é <b>salgada</b>, do mar. Só um pouquinho é doce e pode ser bebida. Por isso, cada gota conta!"
   },
   energia: {
     titulo: "Energia",
-    linhas: [
-      { cor: "yellow", icone: "energia", titulo: "<b>Apague</b> a luz", texto: "saiu do quarto? apague a luz" },
-      { cor: "yellow", icone: "energia", titulo: "Tire da <b>tomada</b>", texto: "aparelhos desligados ainda podem gastar energia" },
-      { cor: "green", icone: "folha", titulo: "Luz do <b>sol</b>", texto: "de dia, abra a janela" },
-      { cor: "blue", icone: "reciclar", titulo: "Lâmpada <b>LED</b>", texto: "gasta menos energia" },
-      { cor: "yellow", icone: "energia", titulo: "Energia da <b>natureza</b>", texto: "a energia de casa vem de fontes da natureza, como o sol, o vento e a água dos rios" }
-    ]
+    imagem: "imagens/cuidar/energia",
+    intro: "A <b>energia</b> elétrica faz a lâmpada acender, a TV ligar e a geladeira gelar. Ela é muito útil, mas não pode ser desperdiçada.",
+    secoes: [
+      { titulo: "De onde vem a energia?", tipo: "cartoes", texto: "A energia de casa vem de fontes da natureza:", itens: [
+        { icone: "sol", titulo: "Sol", texto: "placas guardam a energia da luz do sol" },
+        { icone: "catavento", titulo: "Vento", texto: "o vento faz as hélices girarem" },
+        { icone: "rio", titulo: "Água dos rios", texto: "a força da água gira as máquinas da usina" }
+      ] },
+      { titulo: "Como economizar energia", tipo: "dicas", itens: [
+        { icone: "lampada", texto: "Saiu do quarto? <b>Apague a luz</b>." },
+        { icone: "tomada", texto: "Tire da <b>tomada</b> o que não está usando: aparelhos desligados ainda podem gastar energia." },
+        { icone: "janela", texto: "De dia, <b>abra a janela</b> e aproveite a luz do sol." },
+        { icone: "lampada", texto: "A <b>lâmpada LED</b> gasta menos energia." }
+      ] },
+      { titulo: "Atitudes que desperdiçam", tipo: "evite", itens: [
+        { texto: "Deixar a <b>TV ligada</b> sem ninguém assistindo." },
+        { texto: "Deixar a porta da <b>geladeira</b> aberta." },
+        { texto: "Deixar a <b>luz acesa</b> em um lugar vazio." }
+      ] }
+    ],
+    curiosidade: "No Brasil, grande parte da energia elétrica vem da <b>força da água dos rios</b>, nas usinas hidrelétricas."
   },
   natureza: {
     titulo: "Natureza",
-    linhas: [
-      { cor: "green", icone: "folha", titulo: "<b>Plantar</b> árvores", texto: "dão sombra, ar limpo e casa para os bichos" },
-      { cor: "blue", icone: "agua", titulo: "Rios <b>limpos</b>", texto: "lixo no chão vai parar nos rios e no mar" },
-      { cor: "brown", icone: "folha", titulo: "<b>Respeitar</b> os bichos", texto: "observe de longe e não alimente" },
-      { cor: "yellow", icone: "reciclar", titulo: "<b>Economizar</b> papel", texto: "use os dois lados da folha" },
-      { cor: "green", icone: "folha", titulo: "<b>Desmatamento</b>", texto: "cortar florestas deixa os animais sem casa e coloca mais gás carbônico no ar" },
-      { cor: "green", icone: "folha", titulo: "<b>Parques</b> e praças", texto: "jogue o lixo na lixeira, não arranque flores e não escreva nas árvores" }
-    ]
+    imagem: "imagens/cuidar/planta",
+    intro: "<b>Natureza</b> são as plantas, os bichos, os rios, o mar e as florestas. Nós também fazemos parte dela!",
+    secoes: [
+      { titulo: "Por que as árvores são importantes?", tipo: "cartoes", itens: [
+        { icone: "arvore", titulo: "Sombra", texto: "a <b>árvore</b> refresca num dia quente" },
+        { icone: "ar", titulo: "Ar limpo", texto: "as plantas ajudam a deixar o ar mais limpo" },
+        { icone: "joaninha", titulo: "Casa para os bichos", texto: "pássaros e insetos moram nelas" }
+      ], fecho: "Por isso, <b>plantar árvores</b> é um presente para o planeta!" },
+      { titulo: "Cuidado com a floresta e os rios", tipo: "lista", itens: [
+        { icone: "toco", titulo: "Desmatamento", texto: "cortar <b>florestas</b> deixa os animais sem casa e coloca mais gás carbônico no ar." },
+        { icone: "peixe", titulo: "Rios limpos", texto: "o lixo jogado no chão vai parar nos rios e no <b>mar</b>." }
+      ] },
+      { titulo: "Como você pode ajudar", tipo: "dicas", itens: [
+        { icone: "muda", texto: "Cuide de uma <b>planta</b>: ela precisa de água e de carinho." },
+        { icone: "joaninha", texto: "<b>Respeite os bichos</b>: observe de longe e não alimente." },
+        { icone: "flor", texto: "No <b>parque</b> e na praça: jogue o lixo na lixeira, não arranque flores e não escreva nas árvores." },
+        { icone: "papel", texto: "<b>Economize papel</b>: use os dois lados da folha." }
+      ] }
+    ],
+    curiosidade: "As <b>abelhas</b> levam o pólen de flor em flor. É assim que muitas plantas conseguem dar frutos!"
   }
 };
 
 const janela = document.getElementById("modal");
 if (janela) {
-  const caixa = janela.querySelector(".bin-list");
+  const caixaJanela = janela.querySelector(".learn-modal");
+  const aula = janela.querySelector(".aula");
   const espacoVideo = janela.querySelector(".video-slot");
   const corpo = janela.querySelector(".modal-body");
   const dica = janela.querySelector(".scroll-hint");
   const titulo = janela.querySelector("h2");
+  const simbolo = janela.querySelector(".modal-simbolo");
+
+  // Monta o HTML de uma seção da miniaula
+  function montarSecao(s, n) {
+    let miolo = "";
+    if (s.tipo === "lixeiras") {
+      miolo = '<div class="aula-lixeiras">' + s.itens.map(function (it) {
+        return '<div class="lixeira-card" style="--bin:' + it.cor + '">' + ILUSTRA.lixeira(it.cor, it.tampa, it.simbolo) +
+          "<strong>" + it.titulo + "</strong><small>" + it.texto + "</small></div>";
+      }).join("") + "</div>";
+    } else if (s.tipo === "cartoes") {
+      miolo = '<div class="aula-cartoes">' + s.itens.map(function (it) {
+        return '<div class="aula-cartao"><span class="aula-ilustra">' + ILUSTRA[it.icone] + "</span><strong>" + it.titulo + "</strong><small>" + it.texto + "</small></div>";
+      }).join("") + "</div>";
+    } else if (s.tipo === "lista") {
+      miolo = '<div class="aula-lista">' + s.itens.map(function (it) {
+        return '<div class="aula-linha"><span class="aula-ilustra">' + ILUSTRA[it.icone] + "</span><div><strong>" + it.titulo + "</strong><small>" + it.texto + "</small></div></div>";
+      }).join("") + "</div>";
+    } else {   // "dicas" ou "evite"
+      miolo = '<ul class="aula-dicas' + (s.tipo === "evite" ? " evite" : "") + '">' + s.itens.map(function (it) {
+        const desenho = it.icone ? '<span class="aula-ilustra">' + ILUSTRA[it.icone] + "</span>" : "";
+        return "<li" + (it.icone || s.tipo === "evite" ? "" : ' class="sem-desenho"') + ">" + desenho + '<span class="aula-marca" aria-hidden="true"></span><p>' + it.texto + "</p></li>";
+      }).join("") + "</ul>";
+    }
+    return '<section class="aula-secao"><h3><span class="aula-num" aria-hidden="true">' + n + "</span>" + s.titulo + "</h3>" +
+      (s.texto ? '<p class="aula-texto">' + s.texto + "</p>" : "") + miolo +
+      (s.fecho ? '<p class="aula-fecho">' + s.fecho + "</p>" : "") + "</section>";
+  }
 
   function abrirJanela(tema) {
     const dados = TEMAS[tema];
     titulo.textContent = dados.titulo;
-    janela.querySelector(".learn-modal").setAttribute("aria-label", dados.titulo);
-    // Monta uma linha para cada item do tema
-    caixa.innerHTML = dados.linhas.map(function (linha) {
-      const quadrado = linha.simbolo
-        ? '<span class="bin-color simbolo clay ' + linha.cor + '">' + ICONES.reciclar + "</span>"
-        : linha.icone
-        ? '<span class="bin-color icone clay ' + linha.cor + '">' + ARTE[linha.icone] + "</span>"
-        : '<span class="bin-color clay ' + linha.cor + '"></span>';
-      return '<div class="bin-row">' + quadrado + "<div><strong>" + linha.titulo +
-        "</strong><small>" + linha.texto + "</small></div></div>";
-    }).join("");
+    caixaJanela.setAttribute("aria-label", dados.titulo);
+    caixaJanela.dataset.assunto = tema;   // as cores da janela mudam com o tema (veja o CSS, parte 10)
+    // Símbolo do tema no cabeçalho (a mesma ilustração 3D do cartão)
+    simbolo.innerHTML = '<picture><source srcset="' + dados.imagem + '.webp" type="image/webp"><img src="' + dados.imagem + '.png" alt="" width="512" height="512"></picture>';
+    aula.innerHTML =
+      '<p class="aula-intro">' + dados.intro + "</p>" +
+      dados.secoes.map(function (s, i) { return montarSecao(s, i + 1); }).join("") +
+      (dados.curiosidade ? '<aside class="aula-curiosidade"><span class="mascot rosto-curioso" aria-hidden="true"></span><div><strong>Você sabia?</strong><p>' + dados.curiosidade + "</p></div></aside>" : "");
     // Vídeo do Tito: quando tiver o arquivo, escreva o caminho em "video" no TEMAS (ex.: "videos/agua.mp4")
     if (dados.video) {
       espacoVideo.innerHTML = '<video controls preload="metadata" src="' + dados.video + '"' +
         (dados.capa ? ' poster="' + dados.capa + '"' : "") + "></video>";
+      espacoVideo.classList.remove("vazio");
     } else {
       espacoVideo.innerHTML = '<div class="video-vazio"><span class="video-play">' +
         '<svg class="icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></span>' +
-        "<strong>Vídeo do Tito</strong><small>em breve</small></div>";
+        "<div><strong>Vídeo do Tito</strong><small>em breve</small></div></div>";
+      espacoVideo.classList.add("vazio");
     }
     janela.hidden = false;
     corpo.scrollTop = 0;
@@ -354,7 +483,7 @@ if (areaQuiz) {
     if (escolhida === certa) {
       acertos++; elFeedback.textContent = "Muito bem! Resposta certa!"; trocarRosto(elTito, "animado");
     } else {
-      elFeedback.textContent = "Quase! Veja a resposta certa em destaque."; trocarRosto(elTito, "timido");
+      elFeedback.textContent = "Quase! Veja a resposta certa em destaque."; trocarRosto(elTito, "triste");
     }
     elPontos.textContent = "Acertos: " + acertos;
     botaoDica.hidden = true; elDica.hidden = true;
@@ -410,7 +539,7 @@ if (areaLixeiras) {
         elPlacar.textContent = "Acertos: " + acertos;
         elDica.className = "certo"; elDica.textContent = "Certo!"; trocarRosto(elTitoLixeira, "animado");
       } else {
-        elDica.className = "errado"; elDica.textContent = "Era a lixeira de " + certa.toLowerCase() + "."; trocarRosto(elTitoLixeira, "timido");
+        elDica.className = "errado"; elDica.textContent = "Era a lixeira de " + certa.toLowerCase() + "."; trocarRosto(elTitoLixeira, "triste");
       }
       setTimeout(function () {
         rodada++;
@@ -862,41 +991,74 @@ if (botaoDeNovo) {
   const estrelas = params.has("estrelas") ? numero("estrelas", 5) : 5;
   const a = numero("a", 999), t = numero("t", 999);
 
-  // Título, rostinho do Tito e frase de acordo com as estrelas
+  // Mensagem, expressão do Tito e frase de acordo com as estrelas (0 a 5).
+  // Todas as mensagens incentivam: a criança nunca vê "fracassou" ou um Tito triste.
   const resultados = [
-    { rosto: "triste",    titulo: "Vamos tentar de novo!", frase: "Não desanime, o Tito acredita em você." },
-    { rosto: "timido",    titulo: "Pode melhorar!",        frase: "Você está aprendendo. Tente mais uma vez!" },
-    { rosto: "confiante", titulo: "Pode melhorar!",        frase: "Foi bem! Com mais uma tentativa fica ainda melhor." },
-    { rosto: "confiante", titulo: "Quase lá!",             frase: "Falta pouquinho para ficar perfeito." },
-    { rosto: "feliz",     titulo: "Muito bem!",            frase: "Você mandou muito bem!" },
-    { rosto: "empolgado", titulo: "Perfeito!",             frase: "Você é um super guardião da natureza!" }
+    { rosto: "confiante", titulo: "Boa tentativa!",     frase: "Continue praticando e você vai conseguir!" },
+    { rosto: "confiante", titulo: "Boa tentativa!",     frase: "Continue praticando e você vai conseguir!" },
+    { rosto: "confiante", titulo: "Boa tentativa!",     frase: "Continue praticando e você vai conseguir!" },
+    { rosto: "feliz",     titulo: "Muito bem!",         frase: "Você está aprendendo cada vez mais!" },
+    { rosto: "animado",   titulo: "Muito bem!",         frase: "Você está aprendendo cada vez mais!" },
+    { rosto: "comemorando", titulo: "Uau! Você arrasou!", frase: "Continue assim, guardião da natureza!" }
   ];
   const r = resultados[estrelas];
   document.getElementById("resultado-titulo").textContent = r.titulo;
-  trocarRosto(document.querySelector(".completion-content .mascot"), r.rosto);
+  document.title = "EcoKids - " + r.titulo;
+  const titoFinal = document.querySelector(".completion-content .mascot");
+  trocarRosto(titoFinal, r.rosto);
+  // "comemorando" é o Tito de corpo inteiro: sem o arbusto na frente (veja o CSS, parte 19)
+  titoFinal.parentNode.classList.toggle("corpo-inteiro", r.rosto === "comemorando");
+  titoFinal.setAttribute("aria-label", "Tito, a tartaruga do EcoKids, " + ({ confiante: "fazendo joinha", feliz: "feliz", animado: "animado", comemorando: "comemorando" })[r.rosto]);
+  const painel = document.querySelector(".placar-final");
+  if (painel) painel.dataset.nivel = estrelas === 5 ? "excelente" : estrelas >= 3 ? "bom" : "praticando";
+
+  // Nome do jogo em cima do título
+  const nomes = { "memoria.html": "Jogo da memória", "quiz.html": "Quiz", "lixeira.html": "Lixeira certa", "quebra-cabeca.html": "Quebra-cabeça", "caca-palavras.html": "Caça-palavras", "palavras-cruzadas.html": "Palavras cruzadas" };
+  const elJogo = document.getElementById("resultado-jogo");
+  if (elJogo && nomes[jogo]) elJogo.textContent = "Você terminou: " + nomes[jogo];
 
   // Texto com o resultado de cada jogo (a e t são os dois números que o jogo mandou)
   const detalhes = {
-    "quiz.html": function () { return "Você acertou " + a + " de " + t + " perguntas. "; },
-    "lixeira.html": function () { return "Você acertou " + a + " de " + t + " itens. "; },
-    "memoria.html": function () { return "Você achou os " + a + " pares em " + t + " tentativas. "; },
-    "quebra-cabeca.html": function () { return "Você montou as " + a + " peças com " + t + " trocas. "; },
-    "caca-palavras.html": function () { return t === 0 ? "Você achou as " + a + " palavras sem errar nenhuma vez! " : "Você achou as " + a + " palavras com " + t + (t === 1 ? " tentativa errada. " : " tentativas erradas. "); },
-    "palavras-cruzadas.html": function () { return t === 0 ? "Você completou as palavras cruzadas sem usar dicas! " : "Você completou as palavras cruzadas usando " + t + (t === 1 ? " dica. " : " dicas. "); }
+    "quiz.html": function () { return "Você acertou " + a + " de " + t + " perguntas."; },
+    "lixeira.html": function () { return "Você acertou " + a + " de " + t + " itens."; },
+    "memoria.html": function () { return "Você achou os " + a + " pares em " + t + " tentativas."; },
+    "quebra-cabeca.html": function () { return "Você montou as " + a + " peças com " + t + " trocas."; },
+    "caca-palavras.html": function () { return t === 0 ? "Você achou as " + a + " palavras sem errar nenhuma vez!" : "Você achou as " + a + " palavras com " + t + (t === 1 ? " tentativa errada." : " tentativas erradas."); },
+    "palavras-cruzadas.html": function () { return t === 0 ? "Você completou as palavras cruzadas sem usar dicas!" : "Você completou as palavras cruzadas usando " + t + (t === 1 ? " dica." : " dicas."); }
   };
-  document.getElementById("resultado-frase").textContent = (params.has("a") && detalhes[jogo] ? detalhes[jogo]() : "") + r.frase;
+  document.getElementById("resultado-frase").textContent = r.frase;
+  const elDetalhe = document.getElementById("resultado-detalhe");
+  if (elDetalhe && params.has("a") && detalhes[jogo]) { elDetalhe.textContent = detalhes[jogo](); elDetalhe.hidden = false; }
 
-  // 5 estrelas: as primeiras ficam amarelas, o resto fica vazio
+  // 5 estrelas de massinha: as conquistadas ficam douradas (com carinha), as outras ficam "vazias".
+  // Elas aparecem uma de cada vez (a animação fica no CSS, parte 19).
+  const PONTAS = "M50 12 61.2 36.6 88 39.6 68.1 57.9 73.5 84.4 50 71 26.5 84.4 31.9 57.9 12 39.6 38.8 36.6Z";
+  function desenhoEstrela(cheia) {
+    const cor = cheia ? "url(#g-estrela)" : "url(#g-estrela-vazia)";
+    return '<svg viewBox="0 0 100 100" aria-hidden="true">' +
+      '<path d="' + PONTAS + '" class="estrela-base" stroke-width="12" stroke-linejoin="round" transform="translate(0 5)"/>' +
+      '<g filter="url(#ek-massa-estrela)"><path d="' + PONTAS + '" fill="' + cor + '" stroke="' + cor + '" stroke-width="12" stroke-linejoin="round"/></g>' +
+      '<ellipse cx="38" cy="33" rx="7" ry="3.6" fill="#fff" opacity=".7" transform="rotate(-32 38 33)"/>' +
+      (cheia ? '<circle cx="42" cy="52" r="3.6" fill="#5a3200"/><circle cx="58" cy="52" r="3.6" fill="#5a3200"/><circle cx="43" cy="51" r="1.2" fill="#fff"/><circle cx="59" cy="51" r="1.2" fill="#fff"/>' +
+        '<path d="M44.5 60q5.5 5 11 0" fill="none" stroke="#5a3200" stroke-width="3" stroke-linecap="round"/><circle cx="36" cy="59" r="3.4" fill="#ff8a65" opacity=".55"/><circle cx="64" cy="59" r="3.4" fill="#ff8a65" opacity=".55"/>' : "") +
+      "</svg>";
+  }
   const caixaEstrelas = document.getElementById("estrelas");
   for (let i = 1; i <= 5; i++) {
     const estrela = document.createElement("span");
-    estrela.className = "star-badge clay" + (i <= estrelas ? "" : " vazia");
-    estrela.innerHTML = ICONES.estrela;
+    estrela.className = "star-badge" + (i <= estrelas ? " cheia" : " vazia");
+    estrela.style.setProperty("--i", i - 1);
+    estrela.innerHTML = desenhoEstrela(i <= estrelas);
     estrela.setAttribute("aria-hidden", "true");
     caixaEstrelas.appendChild(estrela);
   }
   caixaEstrelas.setAttribute("role", "img");
   caixaEstrelas.setAttribute("aria-label", estrelas + " de 5 estrelas");
+  caixaEstrelas.style.setProperty("--total", estrelas);
+
+  // Contagem bem clara embaixo das estrelas: "3 de 5 estrelas"
+  const contagem = document.getElementById("estrelas-contagem");
+  if (contagem) contagem.innerHTML = "<b>" + estrelas + "</b> de 5 estrelas";
 }
 
 // ============================================================
