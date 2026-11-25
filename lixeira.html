@@ -6,10 +6,13 @@
   <title>EcoKids - Lixeira certa</title>
   <meta name="description" content="EcoKids: jogos e dicas rápidas com o Tito para crianças de 6 a 11 anos aprenderem a cuidar do planeta.">
   <meta name="theme-color" content="#1d5a3b">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=25">
+  <link rel="stylesheet" href="css/style.css?v=29">
   <script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("ecokids-tema");if(t==="escuro"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.tema="escuro"}catch(e){}</script>
 </head>
 <body>
@@ -27,6 +30,19 @@
         <a class="clay-button yellow" href="jogos.html">Jogar</a>
       </nav>
     </header>
+    <!-- Filtro de "massinha" usado nas ilustrações das itens da lixeira (brilho por cima e sombra por dentro) -->
+    <svg class="cena-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <filter id="ek-massa" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.8" result="b"/>
+        <feSpecularLighting in="b" surfaceScale="3" specularConstant=".75" specularExponent="26" lighting-color="#fff" result="s"><feDistantLight azimuth="225" elevation="48"/></feSpecularLighting>
+        <feComposite in="s" in2="SourceAlpha" operator="in" result="brilho"/>
+        <feOffset in="SourceAlpha" dx="-2" dy="-3"/><feGaussianBlur stdDeviation="2" result="o"/>
+        <feComposite in="SourceAlpha" in2="o" operator="arithmetic" k2="1" k3="-1" result="borda"/>
+        <feFlood flood-color="#0b2200" flood-opacity=".3"/><feComposite in2="borda" operator="in" result="sombra"/>
+        <feMerge result="m"><feMergeNode in="SourceGraphic"/><feMergeNode in="sombra"/></feMerge>
+        <feComposite in="m" in2="brilho" operator="arithmetic" k2="1" k3="1"/>
+      </filter>
+    </svg>
     <div class="game-content">
         <!-- Barra de cima do jogo: voltar, título e pontos -->
         <div class="game-bar">
@@ -37,10 +53,12 @@
         <div class="trash-prompt-row">
           <div class="mascot mascot-thinking rosto-curioso" role="img" aria-label="Tito, a tartaruga do EcoKids"></div>
           <section class="trash-prompt clay">
-            <span>Onde jogar este item?</span>
-            <!-- A imagem do item muda pelo JavaScript (lista "itens" no js/script.js) -->
-            <img id="item-imagem" class="item-imagem" src="imagens/lixeira/garrafa-pet.jpg" alt="Item para jogar fora" width="400" height="400">
+            <span>Arraste o item até a lixeira certa!</span>
+            <!-- O desenho do item (SVG de massinha) é colocado pelo JavaScript (lista "itens" no js/script.js, bloco 5) -->
+            <div id="item-imagem" class="item-imagem item-arrastavel" role="img" aria-label="Item para jogar fora"></div>
+            <strong class="item-nome" id="item-nome"></strong>
             <small id="item-dica" aria-live="polite"></small>
+            <p class="trash-tip">Também dá para tocar na lixeira.</p>
           </section>
         </div>
         <div class="big-bins" id="lixeiras">
@@ -80,7 +98,7 @@
       <div></div>
     </div>
   </main>
-  <script src="js/script.js?v=23"></script>
+  <script src="js/script.js?v=27"></script>
   <script src="js/tito.js?v=21"></script>
 </body>
 </html>

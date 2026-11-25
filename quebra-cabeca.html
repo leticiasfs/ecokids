@@ -6,10 +6,13 @@
   <title>EcoKids - Quebra-cabeça</title>
   <meta name="description" content="EcoKids: jogos e dicas rápidas com o Tito para crianças de 6 a 11 anos aprenderem a cuidar do planeta.">
   <meta name="theme-color" content="#1d5a3b">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=25">
+  <link rel="stylesheet" href="css/style.css?v=29">
   <script>document.documentElement.classList.add("js");try{var t=localStorage.getItem("ecokids-tema");if(t==="escuro"||(!t&&matchMedia("(prefers-color-scheme: dark)").matches))document.documentElement.dataset.tema="escuro"}catch(e){}</script>
 </head>
 <body>
@@ -34,13 +37,21 @@
           <h1>Quebra-cabeça</h1>
           <span class="score-pill clay" id="placar" aria-live="polite">Peças certas: 0</span>
         </div>
-        <div class="puzzle-layout" id="layout-quebra">
-          <!-- As peças são criadas pelo JavaScript (bloco 6), que também escolhe a figura da vez (veja a lista "figuras" no script) -->
+        <!-- Tela de seleção: os cartões das figuras são criados pelo JavaScript (lista "figuras" no bloco 6 do script) -->
+        <section class="puzzle-choose" id="escolha-figura" aria-labelledby="escolha-titulo">
+          <h2 id="escolha-titulo">Escolha uma figura para montar</h2>
+          <p>Toque em uma figura. Você pode montar a mesma quantas vezes quiser!</p>
+          <div class="figure-grid" id="lista-figuras"></div>
+        </section>
+        <!-- O jogo: aparece depois que a criança escolhe a figura -->
+        <div class="puzzle-layout" id="layout-quebra" hidden>
+          <!-- As peças são criadas pelo JavaScript (bloco 6) -->
           <div class="puzzle-board clay" id="tabuleiro"></div>
           <aside class="puzzle-guide">
             <h2>Monte a figura</h2>
-            <img id="modelo" src="imagens/quebra-cabeca-1-quadrado.png" alt="Modelo completo do quebra-cabeça" width="900" height="900">
-            <p>Toque em duas peças para trocar de lugar.</p>
+            <img id="modelo" src="imagens/quebra-cabeca-1-mini.webp" alt="Modelo da figura" width="900" height="900">
+            <p><b>Arraste</b> uma peça até onde ela deve ficar. Ou toque em duas peças para trocar de lugar.</p>
+            <button class="clay-button light trocar-figura" id="trocar-figura" type="button">Escolher outra figura</button>
           </aside>
         </div>
     </div>
@@ -53,7 +64,7 @@
       <div></div>
     </div>
   </main>
-  <script src="js/script.js?v=23"></script>
+  <script src="js/script.js?v=27"></script>
   <script src="js/tito.js?v=21"></script>
 </body>
 </html>
